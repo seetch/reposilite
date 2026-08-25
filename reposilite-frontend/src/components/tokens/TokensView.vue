@@ -16,25 +16,47 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { createErrorToast, createWarningToast } from '../../helpers/toast'
+import { useClipboard } from '@vueuse/core'
+import { createErrorToast, createWarningToast, createSuccessToast } from '../../helpers/toast'
 import { useTokens } from '../../store/tokens'
+import { useRepositories } from '../../store/repositories'
 import { property } from '../../helpers/vue-extensions'
 import PencilIcon from '../icons/PencilIcon.vue'
 import TrashIcon from '../icons/TrashIcon.vue'
 import RefreshIcon from '../icons/RefreshIcon.vue'
 import ViewHeader from '../util/ViewHeader.vue'
+import RoleSelector from './RoleSelector.vue'
 
 const props = defineProps({
   selectedTab: property(String, true)
 })
 
-const { tokens, fetchTokens, createToken, saveTokenMeta, saveRoute, removeRoute, deleteToken, regenerateSecret, groupRoutes, tokenIsManager, toMs, errorMessage } = useTokens()
+const { tokens, fetchTokens, createToken, saveTokenMeta, saveRoute, removeRoute, deleteToken, regenerateSecret, groupRoutes, tokenIsManager, toMs, errorMessage, ROLES, roleMeta, roleOf } = useTokens()
+const { repositories, fetchRepositories } = useRepositories()
+const { copy: copyText, isSupported: isCopySupported } = useClipboard()
+
+const copySecret = () => {
+  if (!secret.value) return
+  copyText(secret.value.value)
+  createSuccessToast('Secret copied to clipboard')
+}
+
+const assignableRoles = ROLES.filter(role => role.id !== 'NONE')
+const roleBadgeClass = (roleId) => ({
+  ADMINISTRATOR: 'bg-accent-100 text-accent-700 dark:bg-accent-900 dark:text-accent-200',
+  PUBLISHER: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200',
+  VIEWER: 'bg-gray-150 text-gray-600 dark:bg-gray-800 dark:text-gray-300',
+  CUSTOM: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200',
+  NONE: 'bg-gray-150 text-gray-400 dark:bg-gray-800 dark:text-gray-500',
+}[roleId])
 
 watch(
   () => props.selectedTab,
   (selectedTab, prev) => {
-    if (selectedTab === 'Tokens' && prev === undefined)
+    if (selectedTab === 'Tokens' && prev === undefined) {
       fetchTokens()
+      fetchRepositories()
+    }
   },
   { immediate: true }
 )
@@ -80,14 +102,34 @@ const isExpired = (token) => !!token.expiresAt && Date.now() > toMs(token.expire
 const expiryOf = (token) => !token.expiresAt ? '∞' : (isExpired(token) ? 'expired' : rel(toMs(token.expiresAt)) + ' left')
 const datesTitle = (token) => `Created ${formatDate(token.createdAt)}` + (token.expiresAt ? `  •  Expires ${formatDate(token.expiresAt)}` : '  •  Never expires')
 
+const repoPath = (name) => '/' + name
+const repositoryOptions = computed(() => repositories.value.map(name => ({ name, path: repoPath(name) })))
+const needsRepositoryPicker = (role) => role === 'PUBLISHER' || role === 'VIEWER'
+const toggleDraftRepo = (path) => {
+  const set = new Set(draft.value.repositoryPaths)
+  set.has(path) ? set.delete(path) : set.add(path)
+  draft.value.repositoryPaths = [...set]
+}
+
 const editToken = (token) => {
   if (editing.value === `token:${tid(token)}`) { close(); return }
   confirming.value = null
-  draft.value = { description: token.description || '', manager: tokenIsManager(token), expiresAt: toDateInput(token.expiresAt) }
+  const role = roleOf(token)
+  draft.value = {
+    description: token.description || '',
+    role,
+    repositoryPaths: needsRepositoryPicker(role) ? groupRoutes(token).map(route => route.path) : [],
+    expiresAt: toDateInput(token.expiresAt),
+  }
   editing.value = `token:${tid(token)}`
 }
-const saveToken = (token) =>
+const saveToken = (token) => {
+  if (needsRepositoryPicker(draft.value.role) && draft.value.repositoryPaths.length === 0) {
+    createWarningToast('Select at least one repository for this role')
+    return
+  }
   saveTokenMeta(token, draft.value).then(ok => { if (ok) close() })
+}
 
 const editRoute = (token, route) => { confirming.value = null; editing.value = `route:${tid(token)}:${route.path}`; draft.value = { path: route.path, read: route.read, write: route.write, original: route.path } }
 const addRoute = (token) => { confirming.value = null; editing.value = `newroute:${tid(token)}`; draft.value = { path: '', read: true, write: false } }
@@ -99,13 +141,17 @@ const persistRoute = (token) => {
   saveRoute(token, { ...draft.value, path }, draft.value.original).then(ok => { if (ok) close() })
 }
 
-const startCreate = () => { confirming.value = null; editing.value = 'newtoken'; draft.value = { name: '', type: 'PERSISTENT' } }
+const startCreate = () => { confirming.value = null; editing.value = 'newtoken'; draft.value = { name: '', type: 'PERSISTENT', role: 'CUSTOM', repositoryPaths: [] } }
 const create = () => {
   const name = (draft.value.name || '').trim()
   if (name === '') { createWarningToast('Token name is required'); return }
   if (/[:/]/.test(name)) { createWarningToast("Token name cannot contain ':' or '/'"); return }
   if (tokens.value.some(token => token.name === name)) { createWarningToast(`A token named '${name}' already exists`); return }
-  createToken(name, { type: draft.value.type })
+  if (needsRepositoryPicker(draft.value.role) && draft.value.repositoryPaths.length === 0) {
+    createWarningToast('Select at least one repository for this role')
+    return
+  }
+  createToken(name, { type: draft.value.type, role: draft.value.role, repositoryPaths: draft.value.repositoryPaths })
     .then(response => { secret.value = { name, value: response.secret }; close() })
     .catch(error => createErrorToast(errorMessage(error)))
 }
@@ -130,6 +176,11 @@ const runConfirm = (token) => {
     >
       <template #note>
         A token's secret is shown only once, when it is generated.
+        Roles: <span
+          v-for="(role, index) in assignableRoles"
+          :key="role.id"
+          :title="role.description"
+        >{{ role.label }}<span v-if="index < assignableRoles.length - 1">, </span></span>.
       </template>
     </ViewHeader>
 
@@ -182,7 +233,7 @@ const runConfirm = (token) => {
           <button
             type="button"
             class="h-8 border-r border-gray-300 bg-white px-3 text-xs text-gray-600 last:border-r-0 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
-            :class="{ 'bg-accent-600 text-white': draft.type === 'PERSISTENT' }"
+            :class="{ '!bg-accent-600 !text-white': draft.type === 'PERSISTENT' }"
             :aria-pressed="draft.type === 'PERSISTENT'"
             @click="draft.type = 'PERSISTENT'"
           >
@@ -191,13 +242,22 @@ const runConfirm = (token) => {
           <button
             type="button"
             class="h-8 border-r border-gray-300 bg-white px-3 text-xs text-gray-600 last:border-r-0 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
-            :class="{ 'bg-accent-600 text-white': draft.type === 'TEMPORARY' }"
+            :class="{ '!bg-accent-600 !text-white': draft.type === 'TEMPORARY' }"
             :aria-pressed="draft.type === 'TEMPORARY'"
             @click="draft.type = 'TEMPORARY'"
           >
             temporary
           </button>
         </div>
+        <RoleSelector
+          :roles="assignableRoles"
+          :role="draft.role"
+          :repositories="repositoryOptions"
+          :repository-paths="draft.repositoryPaths"
+          :needs-repository-picker="needsRepositoryPicker"
+          @update:role="draft.role = $event"
+          @toggle-repository="toggleDraftRepo"
+        />
         <button
           type="button"
           class="h-8 rounded-lg bg-accent-700 px-3 font-medium text-white hover:bg-accent-800"
@@ -219,7 +279,12 @@ const runConfirm = (token) => {
         class="border-b border-gray-200 bg-accent-50 px-4.5 py-3 text-accent-900 dark:border-gray-800 dark:bg-accent-900 dark:text-accent-100"
         role="status"
       >
-        New secret for <strong>{{ secret.name }}</strong>: <code class="px-1 font-mono">{{ secret.value }}</code> — copy it now. <button
+        New secret for <strong>{{ secret.name }}</strong>: <code
+          class="px-1 font-mono"
+          :class="isCopySupported ? 'cursor-pointer underline decoration-dotted hover:bg-accent-100 dark:hover:bg-accent-800' : ''"
+          :title="isCopySupported ? 'Click to copy' : ''"
+          @click="copySecret"
+        >{{ secret.value }}</code> — {{ isCopySupported ? 'click it to copy.' : 'copy it now.' }} <button
           type="button"
           class="ml-2 underline"
           @click="secret = null"
@@ -239,9 +304,10 @@ const runConfirm = (token) => {
           <span class="whitespace-nowrap font-semibold text-gray-800 dark:text-gray-100">{{ token.name }}</span>
           <span class="whitespace-nowrap rounded-lg bg-gray-150 px-1.5 py-0.5 text-[0.7rem] text-gray-600 dark:bg-gray-800 dark:text-gray-400">{{ token.identifier.type.toLowerCase() }}</span>
           <span
-            v-if="tokenIsManager(token)"
-            class="whitespace-nowrap rounded-lg bg-accent-100 px-1.5 py-0.5 text-[0.7rem] text-accent-700 dark:bg-accent-900 dark:text-accent-200"
-          >manager</span>
+            class="whitespace-nowrap rounded-lg px-1.5 py-0.5 text-[0.7rem]"
+            :class="roleBadgeClass(roleOf(token))"
+            :title="roleMeta(roleOf(token)).description"
+          >{{ roleMeta(roleOf(token)).label }}</span>
           <span class="min-w-0 flex-1 truncate text-gray-500 dark:text-gray-500 <sm:basis-full <sm:order-5">{{ token.description }}</span>
           <span
             class="inline-flex cursor-default items-center gap-2 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400 <sm:hidden"
@@ -308,17 +374,15 @@ const runConfirm = (token) => {
             placeholder="Description"
             :aria-label="`Description for ${token.name}`"
           >
-          <div class="inline-flex overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
-            <button
-              type="button"
-              class="h-8 border-r border-gray-300 bg-white px-3 text-xs text-gray-600 last:border-r-0 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
-              :class="{ 'bg-accent-600 text-white': draft.manager }"
-              :aria-pressed="draft.manager"
-              @click="draft.manager = !draft.manager"
-            >
-              manager
-            </button>
-          </div>
+          <RoleSelector
+            :roles="assignableRoles"
+            :role="draft.role"
+            :repositories="repositoryOptions"
+            :repository-paths="draft.repositoryPaths"
+            :needs-repository-picker="needsRepositoryPicker"
+            @update:role="draft.role = $event"
+            @toggle-repository="toggleDraftRepo"
+          />
           <label
             :for="`token-expiry-${tokenIndex}`"
             class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400"
@@ -405,7 +469,7 @@ const runConfirm = (token) => {
                 <button
                   type="button"
                   class="h-8 border-r border-gray-300 bg-white px-3 text-xs text-gray-600 last:border-r-0 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
-                  :class="{ 'bg-accent-600 text-white': draft.read }"
+                  :class="{ '!bg-accent-600 !text-white': draft.read }"
                   :aria-pressed="draft.read"
                   @click="draft.read = !draft.read"
                 >
@@ -414,7 +478,7 @@ const runConfirm = (token) => {
                 <button
                   type="button"
                   class="h-8 border-r border-gray-300 bg-white px-3 text-xs text-gray-600 last:border-r-0 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
-                  :class="{ 'bg-accent-600 text-white': draft.write }"
+                  :class="{ '!bg-accent-600 !text-white': draft.write }"
                   :aria-pressed="draft.write"
                   @click="draft.write = !draft.write"
                 >
@@ -464,7 +528,7 @@ const runConfirm = (token) => {
               <button
                 type="button"
                 class="h-8 border-r border-gray-300 bg-white px-3 text-xs text-gray-600 last:border-r-0 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
-                :class="{ 'bg-accent-600 text-white': draft.read }"
+                :class="{ '!bg-accent-600 !text-white': draft.read }"
                 :aria-pressed="draft.read"
                 @click="draft.read = !draft.read"
               >
@@ -473,7 +537,7 @@ const runConfirm = (token) => {
               <button
                 type="button"
                 class="h-8 border-r border-gray-300 bg-white px-3 text-xs text-gray-600 last:border-r-0 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
-                :class="{ 'bg-accent-600 text-white': draft.write }"
+                :class="{ '!bg-accent-600 !text-white': draft.write }"
                 :aria-pressed="draft.write"
                 @click="draft.write = !draft.write"
               >

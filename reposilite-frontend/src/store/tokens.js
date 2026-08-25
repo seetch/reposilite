@@ -27,6 +27,26 @@ const errorMessage = (error) =>
 const tokenIsManager = (token) =>
   (token.permissions || []).some(permission => permission.identifier === 'access-token:manager')
 
+// Roles are presets over the two primitives Reposilite already has (the manager permission
+// and per-path read/write routes) — no new backend concept, just a friendlier way to assign them.
+const ROLES = [
+  { id: 'ADMINISTRATOR', label: 'Administrator', description: 'Full access to everything: all repositories, settings, tokens and the console.' },
+  { id: 'PUBLISHER', label: 'Publisher', description: 'Can read and deploy/delete artifacts, but only in the repositories you choose.' },
+  { id: 'VIEWER', label: 'Viewer', description: 'Read-only access, only in the repositories you choose.' },
+  { id: 'CUSTOM', label: 'Custom', description: 'Manually configured per-path permissions (mixed read/write, or set up via the CLI).' },
+  { id: 'NONE', label: 'No access', description: "Token exists but isn't granted access to anything yet." },
+]
+const roleMeta = (roleId) => ROLES.find(role => role.id === roleId) || ROLES.find(role => role.id === 'CUSTOM')
+
+const roleOf = (token) => {
+  if (tokenIsManager(token)) return 'ADMINISTRATOR'
+  const routes = groupRoutes(token)
+  if (routes.length === 0) return 'NONE'
+  if (routes.every(route => route.read && route.write)) return 'PUBLISHER'
+  if (routes.every(route => route.read && !route.write)) return 'VIEWER'
+  return 'CUSTOM'
+}
+
 const groupRoutes = (token) => {
   const byPath = {}
   ;(token.routes || []).forEach(route => {
@@ -60,11 +80,21 @@ const fetchTokens = () =>
     .then(response => { tokens.value = response.data })
     .catch(error => createErrorToast(errorMessage(error)))
 
-const createToken = (name, { type, description = '' }) =>
-  client.value.tokens.createOrUpdate(name, {
-    type, secretType: 'RAW', secret: null, description, permissions: [], routes: [], expiresAt: null,
+const roleToPermissionsAndRoutes = (roleId, repositoryPaths = []) => {
+  if (roleId === 'ADMINISTRATOR') return { permissions: ['access-token:manager'], routes: [] }
+  if (roleId === 'PUBLISHER') return { permissions: [], routes: repositoryPaths.map(path => ({ path, permissions: ['r', 'w'] })) }
+  if (roleId === 'VIEWER') return { permissions: [], routes: repositoryPaths.map(path => ({ path, permissions: ['r'] })) }
+  return null // CUSTOM / NONE: leave permissions & routes as they are, managed manually below
+}
+
+const createToken = (name, { type, description = '', role, repositoryPaths }) => {
+  const applied = role ? roleToPermissionsAndRoutes(role, repositoryPaths) : null
+  return client.value.tokens.createOrUpdate(name, {
+    type, secretType: 'RAW', secret: null, description,
+    permissions: applied?.permissions || [], routes: applied?.routes || [], expiresAt: null,
   })
     .then(response => fetchTokens().then(() => response.data))
+}
 
 const saveToken = (token, overrides, successMessage) =>
   client.value.tokens.update(token.name, { ...toUpdateRequest(token), ...overrides })
@@ -72,11 +102,11 @@ const saveToken = (token, overrides, successMessage) =>
     .then(() => { createSuccessToast(successMessage); return true })
     .catch(error => { createErrorToast(errorMessage(error)); return false })
 
-const saveTokenMeta = (token, { description, manager, expiresAt }) =>
+const saveTokenMeta = (token, { description, role, repositoryPaths, expiresAt }) =>
   saveToken(token, {
     description: description.trim(),
-    permissions: manager ? ['access-token:manager'] : [],
     expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null,
+    ...(roleToPermissionsAndRoutes(role, repositoryPaths) || {}), // CUSTOM: leaves permissions/routes untouched
   }, `Token '${token.name}' updated`)
 
 const saveRoute = (token, route, originalPath) => {
@@ -116,6 +146,9 @@ export function useTokens() {
     groupRoutes,
     tokenIsManager,
     toMs,
-    errorMessage
+    errorMessage,
+    ROLES,
+    roleMeta,
+    roleOf
   }
 }

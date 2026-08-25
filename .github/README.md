@@ -55,6 +55,7 @@ This is a simple, extensible and scalable self-hosted solution that replaces man
 > - Redesigned, responsive frontend UI (minimalist layout, light/dark theme, unified sizing/spacing across components)
 > - Artifact search with a command palette (⌘K/Ctrl+K); public repositories are searchable without authentication, hidden/private ones still require a token
 > - Artifact details snippet now includes a `scope` selector, defaulting to `provided`
+> - Token management now has role presets (Administrator/Publisher/Viewer/Custom) with per-repository access pickers, instead of manually toggling raw permissions and routes
 
 ### Installation
 
