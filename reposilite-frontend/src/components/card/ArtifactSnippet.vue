@@ -20,7 +20,7 @@ import CodeString from './CodeString.vue'
 import CodeBrackets from "./CodeBrackets.vue"
 import { computed, ref } from "vue"
 
-defineProps({
+const props = defineProps({
   configuration: {
     type: Object,
     required: true
@@ -28,8 +28,23 @@ defineProps({
   data: {
     type: Object,
     required: true
+  },
+  scope: {
+    type: String,
+    default: 'compile'
   }
 })
+
+const gradleConfigurations = {
+  compile: 'implementation',
+  provided: 'compileOnly',
+  runtime: 'runtimeOnly',
+  test: 'testImplementation',
+  system: 'compileOnly',
+  import: 'implementation'
+}
+
+const gradleConfiguration = computed(() => gradleConfigurations[props.scope] ?? 'implementation')
 
 const preElement = ref()
 const content = computed(() => preElement?.value?.textContent)
@@ -42,16 +57,17 @@ defineExpose({ content })
 <XmlTag name="dependency">
   <XmlTag name="groupId">{{ data.groupId }}</XmlTag>
   <XmlTag name="artifactId">{{ data.artifactId }}</XmlTag>
-  <XmlTag name="version">{{ data.version }}</XmlTag>
+  <XmlTag name="version">{{ data.version }}</XmlTag><template v-if="scope !== 'compile'">
+  <XmlTag name="scope">{{ scope }}</XmlTag></template>
 </XmlTag>
 </pre>
 <pre v-else-if="configuration.lang === 'groovy'" ref="preElement">
-implementation <CodeString>{{ `${data.groupId}:${data.artifactId}:${data.version}` }}</CodeString>
+{{ gradleConfiguration }} <CodeString>{{ `${data.groupId}:${data.artifactId}:${data.version}` }}</CodeString>
 </pre>
 <pre v-else-if="configuration.lang === 'kotlin'" ref="preElement">
-implementation<CodeBrackets start="(" end=")"><CodeString>{{ `${data.groupId}:${data.artifactId}:${data.version}` }}</CodeString></CodeBrackets>
+{{ gradleConfiguration }}<CodeBrackets start="(" end=")"><CodeString>{{ `${data.groupId}:${data.artifactId}:${data.version}` }}</CodeString></CodeBrackets>
 </pre>
 <pre v-else-if="configuration.lang === 'scala'" ref="preElement">
-<CodeString>{{data.groupId}}</CodeString> %% <CodeString>{{data.artifactId}}</CodeString> %% <CodeString>{{data.version}}</CodeString>
+<CodeString>{{data.groupId}}</CodeString> %% <CodeString>{{data.artifactId}}</CodeString> %% <CodeString>{{data.version}}</CodeString><template v-if="scope !== 'compile'"> % <CodeString>{{ scope }}</CodeString></template>
 </pre>
 </template>

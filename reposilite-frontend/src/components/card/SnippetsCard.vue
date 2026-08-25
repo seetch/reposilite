@@ -15,13 +15,14 @@
   -->
 
 <script setup>
-import { ref, watch, watchEffect } from 'vue'
-import { useClipboard } from '@vueuse/core'
+import { nextTick, ref, watch, watchEffect } from 'vue'
+import { onClickOutside, useClipboard } from '@vueuse/core'
 import { useSession } from '../../store/session'
 import useRepository from '../../store/maven/repository'
 import useMetadata from '../../store/maven/metadata'
 import CopyIcon from '../icons/CopyIcon.vue'
 import CopiedIcon from '../icons/CopiedIcon.vue'
+import AdjustmentsIcon from '../icons/AdjustmentsIcon.vue'
 import CardMenu from './CardMenu.vue'
 import RepositorySnippet from "./RepositorySnippet.vue"
 import ArtifactSnippet from "./ArtifactSnippet.vue"
@@ -101,6 +102,47 @@ watchEffect(() => {
     })
 })
 
+const scopeOptions = ['compile', 'provided', 'runtime', 'test', 'system', 'import']
+const scope = ref(localStorage.getItem('artifact-scope') || 'provided')
+watchEffect(() => localStorage.setItem('artifact-scope', scope.value))
+
+// Positioned in JS (not pure CSS) and teleported to <body> so it always renders fully
+// on screen — flips above/below and clamps horizontally based on real viewport space,
+// regardless of where the card ends up scrolled to.
+const scopeButtonRef = ref()
+const scopeMenuRef = ref()
+const scopeMenuOpen = ref(false)
+const scopeMenuPosition = ref({})
+
+const positionScopeMenu = () => {
+  const buttonRect = scopeButtonRef.value.getBoundingClientRect()
+  const menuWidth = 144
+  const estimatedMenuHeight = scopeOptions.length * 34 + 8
+  const openUpward = window.innerHeight - buttonRect.bottom < estimatedMenuHeight && buttonRect.top > estimatedMenuHeight
+  const left = Math.min(Math.max(8, buttonRect.right - menuWidth), window.innerWidth - menuWidth - 8)
+
+  scopeMenuPosition.value = openUpward
+    ? { left: `${left}px`, bottom: `${window.innerHeight - buttonRect.top + 6}px` }
+    : { left: `${left}px`, top: `${buttonRect.bottom + 6}px` }
+}
+
+const openScopeMenu = async () => {
+  scopeMenuOpen.value = true
+  await nextTick()
+  positionScopeMenu()
+}
+
+const closeScopeMenu = () => {
+  scopeMenuOpen.value = false
+}
+
+const selectScope = (option) => {
+  scope.value = option
+  closeScopeMenu()
+}
+
+onClickOutside(scopeMenuRef, closeScopeMenu, { ignore: [scopeButtonRef] })
+
 const selectedTab = ref()
 const transitionName = ref('slide-right')
 
@@ -129,16 +171,15 @@ const selectTab = (tab) =>
 
 <template>
   <section
-    class="bg-white dark:bg-gray-900 shadow-lg p-7 rounded-xl border-gray-100 dark:border-black"
+    class="surface-card p-7"
     :aria-busy="loading"
     aria-labelledby="snippet-card-title"
   >
     <div class="flex flex-row justify-between">
-      <h2 id="snippet-card-title" class="font-bold flex items-center w-full">
+      <h2 id="snippet-card-title" class="font-semibold tracking-tight flex items-center w-full">
         <span v-if="loading" class="h-4 w-36 rounded bg-gray-200 dark:bg-gray-700 skeleton-bars" aria-hidden="true" />
         <template v-else>{{title}}</template>
       </h2>
-      <!-- <button class="bg-black dark:bg-white text-white dark:text-black px-6 py-1 rounded">Download</button> -->
     </div>
 
     <CardMenu
@@ -151,19 +192,58 @@ const selectTab = (tab) =>
     <div class="mt-6">
       <transition :name="transitionName" mode="out-in">
         <div :key="selectedTab" class="relative">
-          <button
-            v-if="isCopySupported && !loading"
-            type="button"
-            class="absolute top-2 right-2 z-10 flex items-center cursor-pointer select-none rounded-md p-1 bg-gray-100 dark:bg-gray-800 text-gray-400 hover:(text-gray-600 bg-gray-200) dark:hover:(text-gray-200 bg-gray-700) transition-colors duration-200"
-            :aria-label="copied ? 'Snippet copied' : 'Copy snippet'"
-            :title="copied ? 'Snippet copied' : 'Copy snippet'"
-            @click="copy"
-          >
-            <span v-if="copied" class="text-ssm font-normal text-green-500 mr-1.5" role="status">Copied</span>
-            <CopiedIcon v-if="copied" class="text-green-500" aria-hidden="true" />
-            <CopyIcon v-else aria-hidden="true" />
-          </button>
-          <div class="card-editor overflow-auto font-mono text-ssm h-29 relative py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-800">
+          <div class="absolute top-2 right-2 z-10 flex items-center gap-1.5">
+            <div v-if="data.type === 'artifact' && !loading">
+              <button
+                ref="scopeButtonRef"
+                type="button"
+                class="icon-btn bg-white dark:bg-gray-900 border-1 border-gray-200 dark:border-gray-700 shadow-surface text-gray-500 dark:text-gray-400 hover:(text-gray-800 dark:text-gray-100 border-accent-400 dark:border-accent-500) transition-colors duration-200"
+                :aria-label="`Scope: ${scope}. Change scope`"
+                :title="`Scope: ${scope}`"
+                aria-haspopup="listbox"
+                :aria-expanded="scopeMenuOpen"
+                @click="scopeMenuOpen ? closeScopeMenu() : openScopeMenu()"
+              >
+                <AdjustmentsIcon aria-hidden="true" />
+              </button>
+              <Teleport to="body">
+                <div
+                  v-if="scopeMenuOpen"
+                  ref="scopeMenuRef"
+                  class="fixed w-36 surface-card shadow-surface-lg py-1 z-50"
+                  :style="scopeMenuPosition"
+                  role="listbox"
+                  aria-label="Scope"
+                >
+                  <button
+                    v-for="option in scopeOptions"
+                    :key="option"
+                    type="button"
+                    role="option"
+                    :aria-selected="option === scope"
+                    class="block w-full text-left px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    :class="option === scope ? 'text-accent-600 dark:text-accent-400 font-medium' : 'text-gray-600 dark:text-gray-300'"
+                    @click="selectScope(option)"
+                  >
+                    {{ option }}
+                  </button>
+                </div>
+              </Teleport>
+            </div>
+            <button
+              v-if="isCopySupported && !loading"
+              type="button"
+              class="icon-btn bg-white dark:bg-gray-900 border-1 border-gray-200 dark:border-gray-700 shadow-surface text-gray-500 dark:text-gray-400 hover:(text-gray-800 dark:text-gray-100 border-accent-400 dark:border-accent-500) transition-colors duration-200"
+              :aria-label="copied ? 'Snippet copied' : 'Copy snippet'"
+              :title="copied ? 'Snippet copied' : 'Copy snippet'"
+              @click="copy"
+            >
+              <span v-if="copied" class="sr-only" role="status">Copied</span>
+              <CopiedIcon v-if="copied" class="text-green-500" aria-hidden="true" />
+              <CopyIcon v-else aria-hidden="true" />
+            </button>
+          </div>
+          <div class="card-editor font-mono text-xs min-h-29 relative py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-800">
             <div v-if="loading" class="skeleton-bars space-y-2.5 pt-1" aria-hidden="true">
               <div class="h-3 rounded bg-gray-200 dark:bg-gray-700" style="width: 80%" />
               <div class="h-3 rounded bg-gray-200 dark:bg-gray-700" style="width: 55%" />
@@ -184,6 +264,7 @@ const selectTab = (tab) =>
                       ref="snippetRef"
                       :configuration="entry"
                       :data="data"
+                      :scope="scope"
                   />
                 </template>
               </template>
@@ -238,6 +319,7 @@ const selectTab = (tab) =>
 }
 
 .card-editor > pre {
-  position: absolute;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 </style>

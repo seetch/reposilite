@@ -28,7 +28,6 @@ import { property } from '../../helpers/vue-extensions'
 const props = defineProps({
   qualifier: property(Object, true),
   files: property(Object, true),
-  compactMode: property(Boolean, true),
   loading: property(Boolean, true),
   retry: property(Function, true)
 })
@@ -71,7 +70,7 @@ const isDirectory = (file) =>
 const LinkEntry = ({ file }) => {
   return (
     <a
-      class="absolute inset-0 z-0 rounded-3xl <sm:rounded-xl"
+      class="absolute inset-0 z-0 rounded-lg <sm:rounded-lg"
       aria-label={`Download ${file.name}`}
       onClick={(event) => {
         event.preventDefault()
@@ -91,7 +90,7 @@ const append = (path, pathToAppend) =>
 const RouterEntry = ({ file }) => {
   return (
     <router-link
-      class="absolute inset-0 z-0 rounded-3xl <sm:rounded-xl"
+      class="absolute inset-0 z-0 rounded-lg <sm:rounded-lg"
       aria-label={`Open ${file.name} directory`}
       to={append(route.path, file.name)}
     />
@@ -106,15 +105,15 @@ const RouterEntry = ({ file }) => {
       :value="deleteModalValue"
       :close="closeDeleteModal"
     />
-    <ul :class="{'compact-background': compactMode}" :aria-busy="loading">
+    <ul :aria-busy="loading">
       <li v-for="(entry, index) in displayedEntries" :key="index" class="relative">
         <div
           v-if="entry.__skeleton"
-          :class="{ 'default-entry': !compactMode, 'compact-entry': compactMode }"
+          class="default-entry"
           aria-hidden="true"
         >
           <div class="flex flex-row max-w-full items-center skeleton-bars">
-            <div :class="{ 'default-icon': !compactMode, 'compact-icon': compactMode }">
+            <div class="default-icon">
               <div class="w-3 h-3 rounded-full bg-gray-200 dark:bg-gray-700" />
             </div>
             <div class="h-3.5 rounded bg-gray-200 dark:bg-gray-700" :style="{ width: skeletonWidths[index % skeletonWidths.length] }" />
@@ -133,7 +132,6 @@ const RouterEntry = ({ file }) => {
             :qualifier="qualifier"
             :url="createURL(`${$route.path}/${entry.name}`)"
             :openDeleteEntryModal="openDeleteModal"
-            :compactMode="compactMode"
           />
         </template>
       </li>
@@ -146,7 +144,7 @@ const RouterEntry = ({ file }) => {
       <button
         v-if="files.retryable"
         type="button"
-        class="mt-2 min-h-44px py-1 px-4 rounded-full bg-white dark:bg-gray-900 default-button"
+        class="mt-2 min-h-44px py-1 px-4 rounded-lg default-button"
         @click="retry"
       >
         Retry
@@ -154,9 +152,3 @@ const RouterEntry = ({ file }) => {
     </div>
   </section>
 </template>
-
-<style>
-.compact-background {
-  @apply relative w-full bg-white dark:bg-gray-800 py-3 px-1 rounded-xl;
-}
-</style>

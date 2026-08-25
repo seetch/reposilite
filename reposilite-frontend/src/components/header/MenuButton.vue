@@ -17,7 +17,7 @@
 <template>
   <button
     type="button"
-    class="mx-2 py-1.5 rounded-full font-bold px-6 text-sm max-h-35px min-w-93px default-button"
+    class="inline-flex items-center h-9 rounded-lg font-medium px-3.5 text-sm default-button text-gray-600 dark:text-gray-300"
   >
     <slot/>
   </button>

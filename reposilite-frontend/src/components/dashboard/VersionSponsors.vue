@@ -36,7 +36,7 @@ onKeyStroke('Escape', () => {
     ref="container"
     class="relative inline-flex flex-col items-start"
   >
-    <span class="flex items-center gap-2 text-lg font-semibold">
+    <span class="flex items-center gap-2 text-sm font-semibold">
       {{ version }}
       <small
         v-if="latestVersion"
@@ -66,7 +66,7 @@ onKeyStroke('Escape', () => {
     <button
       id="version-sponsors-trigger"
       type="button"
-      class="mt-1 bg-transparent border-0 p-0 text-left cursor-pointer text-xs font-normal text-blue-600 dark:text-blue-300 hover:text-blue-700 dark:hover:text-blue-200"
+      class="mt-1 bg-transparent border-0 p-0 text-left cursor-pointer text-xs font-normal text-accent-600 dark:text-accent-300 hover:text-accent-700 dark:hover:text-accent-200"
       aria-haspopup="dialog"
       :aria-expanded="open"
       aria-controls="version-sponsors-dialog"
@@ -77,7 +77,7 @@ onKeyStroke('Escape', () => {
     <div
       v-if="open"
       id="version-sponsors-dialog"
-      class="absolute right-0 top-full z-50 mt-3 w-96 max-w-[calc(100vw-2rem)] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-4 text-left shadow-xl"
+      class="absolute right-0 top-full z-50 mt-3 w-96 max-w-[calc(100vw-2rem)] surface-card shadow-surface-lg px-5 py-4 text-left"
       role="dialog"
       aria-labelledby="version-sponsors-heading"
     >
@@ -85,7 +85,7 @@ onKeyStroke('Escape', () => {
         <div>
           <h2
             id="version-sponsors-heading"
-            class="text-base font-semibold text-gray-900 dark:text-white"
+            class="text-sm font-semibold text-gray-900 dark:text-white"
           >
             Sponsors
           </h2>
@@ -119,7 +119,7 @@ onKeyStroke('Escape', () => {
         :href="allSponsorsUrl"
         target="_blank"
         rel="noopener noreferrer"
-        class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200"
+        class="text-sm font-medium text-accent-600 hover:text-accent-700 dark:text-accent-300 dark:hover:text-accent-200"
       >
         View all sponsors
       </a>

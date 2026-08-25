@@ -30,7 +30,7 @@
       </button>
       <button
         @click="deleteClicked"
-        class="font-mono text-xl"
+        class="font-mono text-sm"
         :class="styles.arrayList.itemDelete"
         type="button"
         aria-label="Delete item"

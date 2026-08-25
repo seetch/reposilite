@@ -21,6 +21,13 @@ import { createToast } from 'mosha-vue-toastify'
 import { useSession } from '../../store/session'
 import CloseIcon from '../icons/CloseIcon.vue'
 
+defineProps({
+  primary: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const { login } = useSession()
 const showLogin = ref(false)
 const name = ref('')
@@ -50,48 +57,42 @@ export default {
       class="flex justify-center items-center"
       aria-labelledby="login-dialog-title"
     >
-      <div class="relative border bg-white dark:bg-gray-900 border-gray-100 dark:border-black m-w-20 py-5 px-10 rounded-2xl shadow-xl text-center">
-        <h2 id="login-dialog-title" class="font-bold text-xl pb-4">Login with access token</h2>
-        <form class="flex flex-col w-96 <sm:w-65" @submit.prevent="signin(name, secret)">
-          <label class="sr-only" for="login-name">Name</label>
-          <input id="login-name" placeholder="Name" v-model="name" type="text" autocomplete="username" class="input"/>
-          <label class="sr-only" for="login-secret">Secret</label>
-          <input id="login-secret" placeholder="Secret" v-model="secret" type="password" autocomplete="current-password" class="input"/>
-          <div class="text-right mt-1">
-            <button type="button" @click="close()" class="text-blue-400 text-xs">← Back to index</button>
+      <div class="w-full max-w-sm surface-card shadow-surface-lg p-6 text-left">
+        <div class="flex items-start justify-between">
+          <div>
+            <h2 id="login-dialog-title" class="font-semibold">Sign in</h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Authenticate with an access token</p>
           </div>
-          <button type="submit" class="bg-gray-100 dark:bg-gray-800 py-2 my-3 rounded-md cursor-pointer">Sign in</button>
+          <button
+            type="button"
+            class="icon-btn text-gray-400 hover:(bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200) transition-colors"
+            aria-label="Close login dialog"
+            title="Close"
+            @click="close()"
+          >
+            <CloseIcon aria-hidden="true" />
+          </button>
+        </div>
+        <form class="mt-5 space-y-3" @submit.prevent="signin(name, secret)">
+          <label class="block">
+            <span class="text-xs text-gray-500 dark:text-gray-400">Name</span>
+            <input id="login-name" v-model="name" type="text" autocomplete="username" required class="input-field mt-1 w-full px-3 py-2 text-sm"/>
+          </label>
+          <label class="block">
+            <span class="text-xs text-gray-500 dark:text-gray-400">Secret</span>
+            <input id="login-secret" v-model="secret" type="password" autocomplete="current-password" required class="input-field mt-1 w-full px-3 py-2 text-sm"/>
+          </label>
+          <button type="submit" class="btn-primary w-full py-2.5 text-sm">Sign in</button>
         </form>
-        <button
-          type="button"
-          class="absolute top-0 right-0 mt-5 mr-5"
-          aria-label="Close login dialog"
-          title="Close"
-          @click="close()"
-        >
-          <CloseIcon class="w-6 h-6" aria-hidden="true" />
-        </button>
       </div>
     </VueFinalModal>
     <button
       type="button"
-      class="mx-2 py-1.5 rounded-full font-bold px-6 text-sm max-h-35px min-w-93px default-button"
+      class="inline-flex items-center h-9 rounded-lg font-medium px-4 text-sm"
+      :class="primary ? 'btn-primary' : 'default-button text-gray-600 dark:text-gray-300'"
       @click="showLogin = true"
     >
       <slot name="button"></slot>
     </button>
   </div>
 </template>
-
-<style scoped>
-.input {
-  @apply p-2;
-  @apply my-1;
-  @apply bg-gray-50 dark:bg-gray-800;
-  @apply rounded-md;
-}
-#login-modal button:hover {
-  @apply bg-gray-200 dark:bg-gray-700;
-  transition: background-color 0.5s;
-}
-</style>

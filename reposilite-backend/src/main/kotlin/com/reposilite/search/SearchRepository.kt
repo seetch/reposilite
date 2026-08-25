@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package com.reposilite.maven.api
+package com.reposilite.search
 
-import com.reposilite.maven.Repository
-import com.reposilite.plugin.api.Event
-import com.reposilite.storage.api.Location
-import com.reposilite.token.AccessTokenIdentifier
+import com.reposilite.search.api.SearchResult
 
-data class DeleteRequest(
-    val accessToken: AccessTokenIdentifier,
-    val repository: Repository,
-    val gav: Location,
-    val by: String
-)
+interface SearchRepository {
 
-/**
- * Called when a file has been successfully removed from repository
- */
-class DeleteEvent(
-    val repository: Repository,
-    val gav: Location,
-    val by: String
-) : Event
+    fun index(repository: String, gav: String)
+
+    fun unindex(repository: String, gav: String)
+
+    fun replaceRepositoryIndex(repository: String, entries: Collection<String>)
+
+    fun findByPhrase(
+        phrase: String,
+        repository: String?,
+        limit: Int,
+        accessibleGavPrefixes: Set<String>?
+    ): List<SearchResult>
+
+}

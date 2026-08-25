@@ -14,25 +14,13 @@
  * limitations under the License.
  */
 
-package com.reposilite.maven.api
+package com.reposilite.search.api
 
-import com.reposilite.maven.Repository
-import com.reposilite.plugin.api.Event
-import com.reposilite.storage.api.Location
-import com.reposilite.token.AccessTokenIdentifier
-
-data class DeleteRequest(
-    val accessToken: AccessTokenIdentifier,
-    val repository: Repository,
-    val gav: Location,
-    val by: String
+data class SearchResult(
+    val repository: String,
+    val gav: String
 )
 
-/**
- * Called when a file has been successfully removed from repository
- */
-class DeleteEvent(
-    val repository: Repository,
-    val gav: Location,
-    val by: String
-) : Event
+data class SearchResponse(
+    val results: List<SearchResult>
+)

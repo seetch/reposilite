@@ -26,10 +26,5 @@ defineProps({
 </script>
 
 <template>
-  <CodeBrackets start="<" end=">"><span>{{ name }}</span></CodeBrackets><slot/><CodeBrackets start="</" end=">"><span>{{ name }}</span></CodeBrackets>
+  <CodeBrackets start="<" end=">"><span class="text-accent-600 dark:text-accent-400">{{ name }}</span></CodeBrackets><slot/><CodeBrackets start="</" end=">"><span class="text-accent-600 dark:text-accent-400">{{ name }}</span></CodeBrackets>
 </template>
-<style scoped>
-span {
-  color: mediumpurple;
-}
-</style>

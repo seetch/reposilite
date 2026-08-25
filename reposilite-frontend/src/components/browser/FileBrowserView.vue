@@ -25,8 +25,6 @@ import Card from '../card/SnippetsCard.vue'
 import Breadcrumb from './BreadcrumbNavigation.vue'
 import FileList from './FileList.vue'
 import BrowserUpload from './FileUpload.vue'
-import ViewGrid from '../icons/ViewGrid.vue'
-import ViewList from '../icons/ViewList.vue'
 import { property } from '../../helpers/vue-extensions'
 
 const props = defineProps({
@@ -121,42 +119,22 @@ watch(
   { immediate: true }
 )
 
-const fileBrowserCompactViewKey = 'file-browser-compact-view'
-const fileBrowserCompactMode = ref(localStorage.getItem(fileBrowserCompactViewKey) === "true")
-const toggleCompactMode = () => {
-  fileBrowserCompactMode.value = !fileBrowserCompactMode.value
-  localStorage.setItem(fileBrowserCompactViewKey, fileBrowserCompactMode.value.toString())
-}
-
 </script>
 
 <template>
   <div class="bg-gray-100">
     <div class="dark:bg-black">
-      <div class="container mx-auto relative min-h-320px mb-12">
-        <aside class="lg:absolute pt-13 -top-5 right-8" aria-label="Repository snippets">
+      <div class="container mx-auto min-h-320px mb-12 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-8 lg:items-start">
+        <aside class="lg:order-2 lg:pt-2" aria-label="Repository snippets">
           <Card :qualifier="qualifier" />
         </aside>
-        <div class="lg:max-w-2/5 xl:max-w-1/2">
+        <div class="min-w-0 lg:order-1">
           <div class="flex justify-between pt-7 px-2">
             <Breadcrumb :parentPath="parentPath" />
-            <div class="flex">
-              <div class="w-9 mx-2">
-                <button
-                  type="button"
-                  class="bg-white dark:bg-gray-900 pl-2 pt-1.3 pb-1 pr-2 cursor-pointer rounded-full default-button"
-                  aria-label="Compact file view"
-                  :title="fileBrowserCompactMode ? 'Use detailed file view' : 'Use compact file view'"
-                  :aria-pressed="fileBrowserCompactMode"
-                  @click="toggleCompactMode()"
-                >
-                  <ViewGrid v-if="fileBrowserCompactMode" class="pr-0.9" aria-hidden="true" />
-                  <ViewList v-else class="pr-0.9" aria-hidden="true" />
-                </button>
-              </div>
+            <div class="flex gap-2">
               <AdjustmentsModal>
                 <template v-slot:button>
-                  <AdjustmentsIcon class="pr-0.9" aria-hidden="true" />
+                  <AdjustmentsIcon aria-hidden="true" />
                 </template>
               </AdjustmentsModal>
             </div>
@@ -164,7 +142,6 @@ const toggleCompactMode = () => {
           <FileList
             :qualifier="qualifier"
             :files="processedFiles"
-            :compactMode="fileBrowserCompactMode"
             :loading="loading"
             :retry="refreshQualifier"
           />

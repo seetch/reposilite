@@ -20,9 +20,8 @@ import { useSession } from "./store/session"
 import useTheme from "./store/theme"
 import useQualifier from "./store/qualifier"
 import usePlaceholders from './store/placeholders'
-import HeartIcon from './components/icons/HeartIcon.vue'
 
-const { title, description, icpLicense, privacyPolicy } = usePlaceholders()
+const { title, description } = usePlaceholders()
 const { theme, fetchColorMode } = useTheme()
 const { initializeSession } = useSession()
 const { qualifier } = useQualifier()
@@ -43,40 +42,24 @@ initializeSession().catch(() => {})
         :qualifier="qualifier"
       />
       <footer class="page-footer">
-        <div class="container mx-auto flex items-center justify-center gap-2 <sm:flex-wrap">
-          <span class="footer-attribution">
+        <div class="container mx-auto flex items-center justify-center gap-2 flex-nowrap overflow-x-auto whitespace-nowrap">
+          <span>
+            Based on
             <a
               href="https://reposilite.com"
               target="_blank"
               rel="noopener noreferrer"
             >Reposilite</a>
-            <HeartIcon
-              class="footer-heart"
-              aria-hidden="true"
-            />
-            <span class="sr-only">loves</span>
-            <a
-              href="https://github.com/dzikoysk/reposilite"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Open Source</a>
           </span>
-          <template v-if="icpLicense">
-            <span aria-hidden="true">·</span>
+          <span aria-hidden="true">·</span>
+          <span>
+            Fork:
             <a
-              href="https://beian.miit.gov.cn"
+              href="https://github.com/seetch/reposilite"
               target="_blank"
               rel="noopener noreferrer"
-            >{{ icpLicense }}</a>
-          </template>
-          <template v-if="privacyPolicy">
-            <span aria-hidden="true">·</span>
-            <a
-              :href="privacyPolicy"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Privacy Policy</a>
-          </template>
+            >seetch/reposilite</a>
+          </span>
         </div>
       </footer>
     </div>
@@ -88,21 +71,15 @@ html, body {
   @apply bg-gray-100 dark:bg-black;
 }
 #app {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'JetBrains Mono', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 .page-footer {
-  @apply w-full bg-gray-100 dark:bg-black py-3 text-center text-xs text-gray-500 dark:text-gray-400;
+  @apply w-full bg-gray-100 dark:bg-black border-t-1 border-gray-150 dark:border-gray-900 py-4 text-center text-xs text-gray-500 dark:text-gray-400;
 }
 .page-footer a {
   @apply hover:text-gray-800 dark:hover:text-gray-100;
-}
-.footer-attribution {
-  @apply inline-flex items-center gap-1.5;
-}
-.footer-heart {
-  @apply h-2.5 w-2.5 text-black dark:text-white;
 }
 .container {
   @apply px-10 <sm:px-2;

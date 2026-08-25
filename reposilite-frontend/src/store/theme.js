@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { reactive } from 'vue'
+import { reactive, watchEffect } from 'vue'
 
 const theme = reactive({
   mode: 'auto',
@@ -22,6 +22,13 @@ const theme = reactive({
 })
 
 const themeKey = 'theme-mode'
+
+// Mirrored onto <html> (not just an inner wrapper div) so that content teleported to
+// document.body - vue-final-modal dialogs, the search command palette - still resolves
+// Windi's `.dark &` selectors correctly instead of rendering stuck in light mode.
+watchEffect(() => {
+  document.documentElement.classList.toggle('dark', theme.isDark)
+})
 
 export default function useTheme() {
   const fetchColorMode = () => {

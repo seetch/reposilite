@@ -141,7 +141,7 @@ const plural = (count, singular, pluralText) =>
 
     <div class="grid grid-cols-6 gap-4 <md:grid-cols-1">
       <section
-        class="col-span-6 <md:col-span-1 bg-white dark:bg-gray-900 rounded-lg p-5 min-w-0"
+        class="col-span-6 <md:col-span-1 surface-card p-5 min-w-0"
         aria-label="Instance status"
       >
         <dl class="grid grid-cols-3 gap-6 <sm:grid-cols-2 <sm:gap-5">
@@ -149,8 +149,8 @@ const plural = (count, singular, pluralText) =>
             <dt class="text-sm text-gray-500 dark:text-gray-400 mb-2">
               Status
             </dt>
-            <dd class="text-lg font-semibold flex items-center gap-2">
-              <span class="text-green-600 dark:text-green-400 font-semibold text-lg inline-flex items-center gap-2"><span
+            <dd class="text-sm font-semibold flex items-center gap-2">
+              <span class="text-green-600 dark:text-green-400 font-semibold text-sm inline-flex items-center gap-2"><span
                 class="w-2 h-2 rounded-full bg-green-500"
                 aria-hidden="true"
               />Online</span>
@@ -168,7 +168,7 @@ const plural = (count, singular, pluralText) =>
             <dt class="text-sm text-gray-500 dark:text-gray-400 mb-2">
               Runtime
             </dt>
-            <dd class="text-lg font-semibold flex items-center gap-2 tabular-nums">
+            <dd class="text-sm font-semibold flex items-center gap-2 tabular-nums">
               {{ prettyUptime(instanceStatus.uptime / 1000) }}
             </dd>
             <dd class="mt-1 text-xs text-gray-500 dark:text-gray-400 tabular-nums">
@@ -179,7 +179,7 @@ const plural = (count, singular, pluralText) =>
             <dt class="text-sm text-gray-500 dark:text-gray-400 mb-2">
               Version
             </dt>
-            <dd class="text-lg font-semibold flex items-center gap-2 tabular-nums">
+            <dd class="text-sm font-semibold flex items-center gap-2 tabular-nums">
               <VersionSponsors
                 :version="instanceStatus.version"
                 :latest-version="instanceStatus.latestVersion"
@@ -190,13 +190,13 @@ const plural = (count, singular, pluralText) =>
         </dl>
       </section>
 
-      <section class="col-span-3 <md:col-span-1 bg-white dark:bg-gray-900 rounded-lg p-5 min-w-0">
+      <section class="col-span-3 <md:col-span-1 surface-card p-5 min-w-0">
         <div class="flex items-center justify-between mb-3.5">
           <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-300">
             Resources
           </h2><button
             type="button"
-            class="text-sm text-blue-600 dark:text-blue-300 cursor-pointer hover:text-blue-700 dark:hover:text-blue-200 bg-transparent border-0 p-0"
+            class="text-sm text-accent-600 dark:text-accent-300 cursor-pointer hover:text-accent-700 dark:hover:text-accent-200 bg-transparent border-0 p-0"
             @click="$emit('goto', 'Diagnostics')"
           >
             Diagnostics
@@ -207,7 +207,7 @@ const plural = (count, singular, pluralText) =>
             <span class="text-gray-500 dark:text-gray-400">Heap memory</span><span class="font-semibold tabular-nums">{{ instanceStatus.usedMemory.toFixed(0) }} MB <small class="text-gray-600 dark:text-gray-300 font-normal">/ {{ instanceStatus.maxMemory }} MB</small></span>
           </div>
           <div
-            class="h-2 rounded-full bg-gray-150 dark:bg-gray-800 overflow-hidden"
+            class="h-2 rounded-lg bg-gray-150 dark:bg-gray-800 overflow-hidden"
             role="progressbar"
             aria-label="Heap memory usage"
             aria-valuemin="0"
@@ -215,7 +215,7 @@ const plural = (count, singular, pluralText) =>
             :aria-valuenow="heapUsage"
           >
             <div
-              class="h-full rounded-full bg-blue-600 dark:bg-blue-500"
+              class="h-full rounded-lg bg-accent-600 dark:bg-accent-500"
               :style="{ width: heapUsage + '%' }"
             />
           </div>
@@ -225,7 +225,7 @@ const plural = (count, singular, pluralText) =>
             <span class="text-gray-500 dark:text-gray-400">Threads</span><span class="font-semibold tabular-nums">{{ instanceStatus.usedThreads }} <small class="text-gray-600 dark:text-gray-300 font-normal">/ {{ instanceStatus.maxThreads }}</small></span>
           </div>
           <div
-            class="h-2 rounded-full bg-gray-150 dark:bg-gray-800 overflow-hidden"
+            class="h-2 rounded-lg bg-gray-150 dark:bg-gray-800 overflow-hidden"
             role="progressbar"
             aria-label="Thread usage"
             aria-valuemin="0"
@@ -233,20 +233,20 @@ const plural = (count, singular, pluralText) =>
             :aria-valuenow="threadsUsage"
           >
             <div
-              class="h-full rounded-full bg-blue-600 dark:bg-blue-500"
+              class="h-full rounded-lg bg-accent-600 dark:bg-accent-500"
               :style="{ width: threadsUsage + '%' }"
             />
           </div>
         </div>
       </section>
 
-      <section class="col-span-3 <md:col-span-1 bg-white dark:bg-gray-900 rounded-lg p-5 min-w-0">
+      <section class="col-span-3 <md:col-span-1 surface-card p-5 min-w-0">
         <div class="flex items-center justify-between mb-3.5">
           <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-300">
             Traffic
           </h2><button
             type="button"
-            class="text-sm text-blue-600 dark:text-blue-300 cursor-pointer hover:text-blue-700 dark:hover:text-blue-200 bg-transparent border-0 p-0"
+            class="text-sm text-accent-600 dark:text-accent-300 cursor-pointer hover:text-accent-700 dark:hover:text-accent-200 bg-transparent border-0 p-0"
             @click="$emit('goto', 'Statistics')"
           >
             Statistics
@@ -254,17 +254,17 @@ const plural = (count, singular, pluralText) =>
         </div>
         <template v-if="traffic">
           <div class="flex items-baseline gap-2 min-w-0">
-            <span class="text-2xl font-semibold leading-tight tabular-nums">{{ traffic.total.toLocaleString() }}</span>
+            <span class="text-sm font-semibold leading-tight tabular-nums">{{ traffic.total.toLocaleString() }}</span>
             <span class="text-sm text-gray-500 dark:text-gray-400 truncate">resolved requests</span>
           </div>
           <div class="mt-4 grid grid-cols-2 gap-3 <sm:grid-cols-1">
             <div class="min-w-0">
               <span class="block text-sm text-gray-500 dark:text-gray-400">{{ traffic.currentLabel }}</span>
-              <b class="block mt-1 truncate text-base text-gray-800 dark:text-gray-100 font-semibold tabular-nums">{{ traffic.current.toLocaleString() }}</b>
+              <b class="block mt-1 truncate text-sm text-gray-800 dark:text-gray-100 font-semibold tabular-nums">{{ traffic.current.toLocaleString() }}</b>
             </div>
             <div class="min-w-0">
               <span class="block text-sm text-gray-500 dark:text-gray-400">Top repository</span>
-              <b class="block mt-1 truncate text-base text-gray-800 dark:text-gray-100 font-semibold">{{ traffic.busiest || 'No data' }}</b>
+              <b class="block mt-1 truncate text-sm text-gray-800 dark:text-gray-100 font-semibold">{{ traffic.busiest || 'No data' }}</b>
             </div>
           </div>
         </template>
@@ -276,27 +276,27 @@ const plural = (count, singular, pluralText) =>
         </div>
       </section>
 
-      <section class="col-span-2 <md:col-span-1 bg-white dark:bg-gray-900 rounded-lg p-5 min-w-0">
+      <section class="col-span-2 <md:col-span-1 surface-card p-5 min-w-0">
         <div class="flex items-center justify-between mb-3.5">
           <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-300">
             Repositories
           </h2><button
             type="button"
-            class="text-sm text-blue-600 dark:text-blue-300 cursor-pointer hover:text-blue-700 dark:hover:text-blue-200 bg-transparent border-0 p-0"
+            class="text-sm text-accent-600 dark:text-accent-300 cursor-pointer hover:text-accent-700 dark:hover:text-accent-200 bg-transparent border-0 p-0"
             @click="$emit('goto', 'Settings')"
           >
             Configure
           </button>
         </div>
         <div class="flex items-baseline gap-2 min-w-0">
-          <span class="text-2xl font-semibold leading-tight tabular-nums">{{ repositories.length }}</span>
+          <span class="text-sm font-semibold leading-tight tabular-nums">{{ repositories.length }}</span>
           <span class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ plural(repositories.length, 'repository', 'repositories') }}</span>
         </div>
         <div class="flex flex-wrap gap-1.5 mt-4 min-h-8 content-start">
           <span
             v-for="tag in repositoryTags"
             :key="tag"
-            class="text-xs px-1.5 py-0.5 rounded-full bg-gray-150 dark:bg-gray-800 text-gray-600 dark:text-gray-300 whitespace-nowrap"
+            class="text-xs px-1.5 py-0.5 rounded-lg bg-gray-150 dark:bg-gray-800 text-gray-600 dark:text-gray-300 whitespace-nowrap"
           >{{ tag }}</span>
           <span
             v-if="repositoryTags.length === 0"
@@ -305,28 +305,28 @@ const plural = (count, singular, pluralText) =>
         </div>
       </section>
 
-      <section class="col-span-2 <md:col-span-1 bg-white dark:bg-gray-900 rounded-lg p-5 min-w-0">
+      <section class="col-span-2 <md:col-span-1 surface-card p-5 min-w-0">
         <div class="flex items-center justify-between mb-3.5">
           <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-300">
             Access tokens
           </h2><button
             type="button"
-            class="text-sm text-blue-600 dark:text-blue-300 cursor-pointer hover:text-blue-700 dark:hover:text-blue-200 bg-transparent border-0 p-0"
+            class="text-sm text-accent-600 dark:text-accent-300 cursor-pointer hover:text-accent-700 dark:hover:text-accent-200 bg-transparent border-0 p-0"
             @click="$emit('goto', 'Tokens')"
           >
             Manage
           </button>
         </div>
         <div class="flex items-baseline gap-2 min-w-0">
-          <span class="text-2xl font-semibold leading-tight tabular-nums">{{ tokens.length }}</span>
+          <span class="text-sm font-semibold leading-tight tabular-nums">{{ tokens.length }}</span>
           <span class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ plural(tokens.length, 'token', 'tokens') }}</span>
         </div>
         <div class="flex flex-wrap gap-1.5 mt-4 min-h-8 content-start">
           <span
             v-for="tag in tokenTags"
             :key="tag.text || tag"
-            class="text-xs px-1.5 py-0.5 rounded-full bg-gray-150 dark:bg-gray-800 text-gray-600 dark:text-gray-300 whitespace-nowrap"
-            :class="{ 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200': tag.mgr }"
+            class="text-xs px-1.5 py-0.5 rounded-lg bg-gray-150 dark:bg-gray-800 text-gray-600 dark:text-gray-300 whitespace-nowrap"
+            :class="{ 'bg-accent-100 dark:bg-accent-900 text-accent-700 dark:text-accent-200': tag.mgr }"
           >{{ tag.text || tag }}</span>
           <span
             v-if="tokenTags.length === 0"
@@ -335,13 +335,13 @@ const plural = (count, singular, pluralText) =>
         </div>
       </section>
 
-      <section class="col-span-2 <md:col-span-1 bg-white dark:bg-gray-900 rounded-lg p-5 min-w-0">
+      <section class="col-span-2 <md:col-span-1 surface-card p-5 min-w-0">
         <div class="flex items-center justify-between mb-3.5">
           <h2 class="text-sm font-semibold text-gray-600 dark:text-gray-300">
             Diagnostics
           </h2><button
             type="button"
-            class="text-sm text-blue-600 dark:text-blue-300 cursor-pointer hover:text-blue-700 dark:hover:text-blue-200 bg-transparent border-0 p-0"
+            class="text-sm text-accent-600 dark:text-accent-300 cursor-pointer hover:text-accent-700 dark:hover:text-accent-200 bg-transparent border-0 p-0"
             @click="$emit('goto', 'Diagnostics')"
           >
             Open
@@ -349,7 +349,7 @@ const plural = (count, singular, pluralText) =>
         </div>
         <div class="flex items-baseline gap-2 min-w-0">
           <span
-            class="text-2xl font-semibold leading-tight tabular-nums"
+            class="text-sm font-semibold leading-tight tabular-nums"
             :class="{ 'text-red-600 dark:text-red-400': instanceStatus.failuresCount > 0 }"
           >{{ instanceStatus.failuresCount }}</span>
           <span

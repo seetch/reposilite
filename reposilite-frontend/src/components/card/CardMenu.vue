@@ -50,8 +50,8 @@ watchEffect(() => localStorage.setItem('dropdown-open', dropdownOpen.value))
         :key="configuration.name" 
         type="button"
         role="tab"
-        class="py-4 px-7 flex-grow text-center border-b-2 cursor-pointer border-transparent"
-        :class="{ '!border-gray-800': configuration.name === selectedTab }"
+        class="py-4 px-7 flex-grow text-center border-b-2 cursor-pointer border-transparent transition-colors"
+        :class="{ '!border-accent-600 dark:!border-accent-400 text-accent-700 dark:text-accent-300': configuration.name === selectedTab }"
         :aria-selected="configuration.name === selectedTab"
         @click="selectConfiguration(configuration)"
       >

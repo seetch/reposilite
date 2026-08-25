@@ -50,7 +50,6 @@ defineExpose({ content })
 <pre v-if="configuration.lang === 'xml'" ref="preElement">
 <XmlTag name="repository">
   <XmlTag name="id">{{ data.repoId }}</XmlTag>
-  <XmlTag name="name">{{ data.title }}</XmlTag>
   <XmlTag name="url">{{ data.domain }}</XmlTag>
 </XmlTag>
 </pre>

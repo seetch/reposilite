@@ -14,7 +14,7 @@ defineProps({
 <template>
   <header class="mb-5 flex items-start justify-between gap-4 text-gray-800 dark:text-gray-100 <md:flex-col">
     <div class="min-w-0">
-      <h1 class="text-lg font-semibold leading-7">
+      <h1 class="text-sm font-semibold leading-7">
         {{ title }}
       </h1>
       <p

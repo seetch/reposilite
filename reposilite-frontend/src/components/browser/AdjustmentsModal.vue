@@ -40,12 +40,12 @@ export default {
       class="flex justify-center iems-center"
       aria-labelledby="adjustments-dialog-title"
     >
-      <div class="relative border bg-white dark:bg-gray-900 border-gray-100 dark:border-black m-w-20 py-5 px-10 rounded-2xl shadow-xl text-center">
+      <div class="relative surface-card shadow-surface-lg m-w-20 py-5 px-10 text-center text-gray-800 dark:text-gray-100">
         <div>
-          <h2 id="adjustments-dialog-title" class="font-bold pb-4">File browser adjustments</h2>
-          <hr class>
+          <h2 id="adjustments-dialog-title" class="font-semibold tracking-tight pb-4">File browser adjustments</h2>
+          <hr class="dark:border-gray-800">
           <div class="flex justify-between pt-6">
-            <p id="reverse-file-order-label" class="pr-7">Sort files from newest to oldest</p>
+            <p id="reverse-file-order-label" class="pr-7 text-gray-700 dark:text-gray-200">Sort files from newest to oldest</p>
             <Toggle
               id="reverse-file-order"
               v-model="reversedFileOrder"
@@ -54,9 +54,9 @@ export default {
             />
           </div>
           <div class="flex justify-between pt-6">
-            <p id="display-hash-files-label" class="pr-7">
-              Display utility files such as 
-              <span class="font-italic font-mono bg-gray-200 dark:bg-black px-2 py-0.5 m-2 rounded-lg">.asc/.md5/.sha1/.sha256/.sha512</span>
+            <p id="display-hash-files-label" class="pr-7 text-gray-700 dark:text-gray-200">
+              Display utility files such as
+              <span class="font-italic font-mono bg-gray-200 dark:bg-gray-800 px-2 py-0.5 m-2 rounded-lg">.asc/.md5/.sha1/.sha256/.sha512</span>
             </p>
             <Toggle
               id="display-hash-files"
@@ -68,18 +68,18 @@ export default {
         </div>
         <button
           type="button"
-          class="absolute top-0 right-0 mt-5 mr-9"
+          class="absolute top-0 right-0 mt-5 mr-9 icon-btn text-gray-500 dark:text-gray-400 hover:(text-gray-800 dark:text-gray-100)"
           aria-label="Close file browser adjustments"
           title="Close"
           @click="showAdjustments = false"
         >
-          <CloseIcon class="w-6 h-6" aria-hidden="true" />
+          <CloseIcon aria-hidden="true" />
         </button>
       </div>
     </VueFinalModal>
     <button
       type="button"
-      class="w-9 bg-white dark:bg-gray-900 pl-2 pt-1.3 pb-1 pr-2 cursor-pointer rounded-full default-button"
+      class="icon-btn default-button"
       aria-label="Open file browser adjustments"
       title="File browser adjustments"
       @click="showAdjustments = true"

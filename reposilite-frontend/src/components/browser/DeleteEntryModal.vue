@@ -63,17 +63,17 @@ export default {
       class="flex justify-center iems-center"
       aria-labelledby="delete-entry-dialog-title"
     >
-      <div class="relative border bg-white dark:bg-gray-900 border-gray-100 dark:border-black m-w-20 py-5 px-10 rounded-2xl shadow-xl text-center">
+      <div class="relative surface-card shadow-surface-lg m-w-20 py-5 px-10 text-center">
         <div>
-          <h2 id="delete-entry-dialog-title" class="font-bold px-16">
-            Do you want to delete 
-            <span class="text-red-700">
+          <h2 id="delete-entry-dialog-title" class="font-semibold tracking-tight px-16">
+            Do you want to delete
+            <span class="text-red-600 dark:text-red-400">
               {{ '/' + value.path + '/' + value.file }}
             </span>
           </h2>
           <div class="flex flex-row justify-evenly pt-4">
-            <button type="button" @click="deleteAndClose()" class="px-12 py-1 rounded-full bg-red-500">Confirm</button>
-            <button type="button" @click="close()" class="px-12 py-1 rounded-full bg-gray-200 dark:bg-gray-600">Cancel</button>
+            <button type="button" @click="deleteAndClose()" class="px-12 py-1.5 rounded-lg bg-red-600 text-white hover:(bg-red-700 transition-colors duration-300)">Confirm</button>
+            <button type="button" @click="close()" class="px-12 py-1.5 btn-secondary">Cancel</button>
           </div>
         </div>
         <button

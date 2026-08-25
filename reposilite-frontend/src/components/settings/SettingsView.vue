@@ -103,7 +103,7 @@ const formsConfiguration = {
           <button
             v-if="hasChanged"
             type="button"
-            class="h-8 whitespace-nowrap rounded-md bg-blue-700 px-3 text-sm text-white hover:bg-blue-800 dark:hover:bg-blue-600 cursor-pointer"
+            class="h-8 whitespace-nowrap rounded-lg bg-accent-700 px-3 text-sm text-white hover:bg-accent-800 dark:hover:bg-accent-600 cursor-pointer"
             :class="{ '!bg-gray-500 cursor-not-allowed': !isValid }"
             :disabled="!isValid"
             @click.prevent="reload(updateConfiguration)"
@@ -113,7 +113,7 @@ const formsConfiguration = {
           <button
             v-if="hasChanged"
             type="button"
-            class="h-8 whitespace-nowrap rounded-md bg-red-600 px-3 text-sm text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 cursor-pointer"
+            class="h-8 whitespace-nowrap rounded-lg bg-red-600 px-3 text-sm text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 cursor-pointer"
             @click.prevent="reload(fetchConfiguration)"
           >
             Reset changes
@@ -121,7 +121,7 @@ const formsConfiguration = {
           <button
             v-if="!hasChanged"
             type="button"
-            class="h-8 whitespace-nowrap rounded-md bg-gray-800 px-3 text-sm text-white hover:bg-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600"
+            class="h-8 whitespace-nowrap rounded-lg bg-gray-800 px-3 text-sm text-white hover:bg-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600"
             :class="{ '!bg-gray-500 cursor-not-allowed': !isValid }"
             :disabled="!isValid"
             @click.prevent="executeIfValid(downloadSettings)"
@@ -139,7 +139,7 @@ const formsConfiguration = {
         role="status"
       >
         <span
-          class="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 dark:border-gray-600 dark:border-t-blue-400"
+          class="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-accent-600 dark:border-gray-600 dark:border-t-accent-400"
           aria-hidden="true"
         />
         Loading configuration...
@@ -221,7 +221,7 @@ const formsConfiguration = {
 }
 .settings-view :deep(.control .input:not([type=checkbox]):focus),
 .settings-view :deep(.control .select:focus) {
-  @apply border-blue-500;
+  @apply border-accent-500;
 }
 .settings-view :deep(.control .input[type="checkbox"]) {
   @apply h-5 w-5;
@@ -329,7 +329,7 @@ const formsConfiguration = {
   @apply rounded-b-lg rounded-tr-lg bg-white dark:bg-gray-900 px-4 py-3 <sm:px-3;
 }
 .settings-view :deep(.array-list-add) {
-  @apply rounded-full h-6 w-6 leading-6 bg-blue-700 text-white z-1 flex-none;
+  @apply rounded-lg h-6 w-6 leading-6 bg-accent-700 text-white z-1 flex-none;
 }
 .settings-view :deep(.array-list-item-move-up) {
   display: none;
@@ -338,7 +338,7 @@ const formsConfiguration = {
   display: none;
 }
 .settings-view :deep(.array-list-no-data) {
-  @apply p-4 bg-white dark:bg-gray-900 italic rounded-md;
+  @apply p-4 bg-white dark:bg-gray-900 italic rounded-lg;
 }
 .settings-view :deep(.wrapper) {
   @apply flex py-2 <sm:flex-col;
@@ -376,13 +376,13 @@ const formsConfiguration = {
   padding-bottom: 0;
 }
 .settings-view :deep(.dialog-root) {
-  @apply w-[calc(100%-2rem)] max-w-md rounded-lg border border-gray-200 bg-white px-6 py-5 text-left text-gray-700 shadow-xl dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200;
+  @apply w-[calc(100%-2rem)] max-w-md rounded-lg border border-gray-150 bg-white px-6 py-5 text-left text-gray-700 shadow-surface-lg dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200;
 }
 .settings-view :deep(.dialog-root::backdrop) {
   @apply bg-black bg-opacity-50;
 }
 .settings-view :deep(.dialog-title) {
-  @apply text-base font-semibold text-gray-900 dark:text-white;
+  @apply text-sm font-semibold text-gray-900 dark:text-white;
 }
 .settings-view :deep(.dialog-body) {
   @apply mt-2 text-sm;
@@ -392,7 +392,7 @@ const formsConfiguration = {
 }
 .settings-view :deep(.dialog-button-primary),
 .settings-view :deep(.dialog-button-secondary) {
-  @apply h-8 rounded-md px-3 text-sm;
+  @apply h-8 rounded-lg px-3 text-sm;
 }
 .settings-view :deep(.dialog-button-primary) {
   @apply bg-red-600 text-white hover:bg-red-700 dark:hover:bg-red-500;

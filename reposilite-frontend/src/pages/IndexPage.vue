@@ -234,7 +234,7 @@ const selectHomepage = () =>
 }
 :deep(.main-menu-tab-active) {
   @apply border-b-2;
-  @apply border-black dark:border-white;
+  @apply border-accent-600 dark:border-accent-400;
   @apply text-black dark:text-white;
 }
 .tabs .item {

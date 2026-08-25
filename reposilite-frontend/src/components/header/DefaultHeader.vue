@@ -18,6 +18,7 @@
 import usePlaceholders from '../../store/placeholders'
 import HeaderHero from './HeaderHero.vue'
 import MenuPanel from './MenuPanel.vue'
+import SearchBox from './SearchBox.vue'
 
 defineProps({
   logoClickCallback: {
@@ -30,15 +31,23 @@ const { title } = usePlaceholders()
 </script>
 
 <template>
-  <header class="bg-gray-100 dark:bg-black dark:text-white">
-    <div class="container mx-auto flex flex-row py-10 justify-between <sm:(pb-2 pt-5 px-5 justify-start)">
-      <p class="text-xl font-medium py-1 <sm:w-1/2">
-        <router-link :to="'/'" @click="logoClickCallback">
-          {{ title }}
-        </router-link>
-      </p>
-      <MenuPanel class="mt-0.5"/>
+  <div>
+    <header class="sticky top-0 z-40 h-14 bg-gray-100 dark:bg-black dark:text-white border-b-1 border-gray-150 dark:border-gray-900">
+      <div class="container mx-auto h-full grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <p class="min-w-0 truncate text-sm font-semibold tracking-tight">
+          <router-link :to="'/'" @click="logoClickCallback">
+            {{ title }}
+          </router-link>
+        </p>
+        <div class="flex justify-center <sm:hidden">
+          <SearchBox class="w-64 lg:w-96" />
+        </div>
+        <MenuPanel class="justify-self-end" />
+      </div>
+    </header>
+    <div class="hidden <sm:block border-b-1 border-gray-150 dark:border-gray-900 px-3 py-2">
+      <SearchBox />
     </div>
-    <HeaderHero class="pt-2 pb-10 <sm:pb-4" />
-  </header>
+    <HeaderHero class="pt-8 pb-10 <sm:pb-4" />
+  </div>
 </template>

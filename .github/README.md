@@ -51,6 +51,11 @@ This is a simple, extensible and scalable self-hosted solution that replaces man
  <br>
 </div>
 
+> This is a fork of [dzikoysk/reposilite](https://github.com/dzikoysk/reposilite) maintained at [seetch/reposilite](https://github.com/seetch/reposilite). Changes on top of upstream:
+> - Redesigned, responsive frontend UI (minimalist layout, light/dark theme, unified sizing/spacing across components)
+> - Artifact search with a command palette (⌘K/Ctrl+K); public repositories are searchable without authentication, hidden/private ones still require a token
+> - Artifact details snippet now includes a `scope` selector, defaulting to `provided`
+
 ### Installation
 
 To run Reposilite for your personal needs you should assign around 20MB of RAM and at least Java 11+ installed. <br>

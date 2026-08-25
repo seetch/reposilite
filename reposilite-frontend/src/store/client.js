@@ -93,6 +93,14 @@ const createClient = (defaultName, defaultSecret) => {
         return get(`/api/statistics/resolved/entries?${query}`)
       }
     },
+    search: {
+      query(phrase, repository, limit = 20) {
+        const query = new URLSearchParams({ phrase })
+        if (repository) query.set("repository", repository)
+        if (limit) query.set("limit", limit)
+        return get(`/api/search?${query}`)
+      }
+    },
     maven: {
       content(gav) {
         return get(`/${gav}`)

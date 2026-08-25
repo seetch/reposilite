@@ -110,7 +110,7 @@ const filtered = computed(() => {
             Instance
           </dt>
           <dd
-            class="text-lg font-semibold mt-0.5"
+            class="text-sm font-semibold mt-0.5"
             :class="health?.status ? (health.status === 'UP' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400') : ''"
           >
             {{ health?.status === 'UP' ? 'Online' : (health?.status || '…') }}
@@ -121,12 +121,12 @@ const filtered = computed(() => {
         <div>
           <dt class="text-sm text-gray-500 dark:text-gray-400">
             Failures
-          </dt><dd class="text-lg font-semibold mt-0.5 tabular-nums">
+          </dt><dd class="text-sm font-semibold mt-0.5 tabular-nums">
             {{ instanceStatus.failuresCount }}
           </dd>
         </div>
         <div
-          class="text-sm rounded-full px-2 py-0.5"
+          class="text-sm rounded-lg px-2 py-0.5"
           :class="instanceStatus.failuresCount > 0 ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200' : 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200'"
         >
           <dt class="sr-only">Review status</dt>
@@ -137,7 +137,7 @@ const filtered = computed(() => {
         <div>
           <dt class="text-sm text-gray-500 dark:text-gray-400">
             Uptime
-          </dt><dd class="text-lg font-semibold mt-0.5 tabular-nums">
+          </dt><dd class="text-sm font-semibold mt-0.5 tabular-nums">
             {{ prettyUptime(instanceStatus.uptime / 1000) }}
           </dd>
         </div>
@@ -153,7 +153,7 @@ const filtered = computed(() => {
           <div class="flex flex-wrap items-baseline gap-2">
             <h2
               id="recorded-failures-heading"
-              class="text-base font-semibold leading-6 text-gray-800 dark:text-gray-100"
+              class="text-sm font-semibold leading-6 text-gray-800 dark:text-gray-100"
             >
               Recorded failures
             </h2>
@@ -167,7 +167,7 @@ const filtered = computed(() => {
             Exception traces captured by this instance since the last restart.
           </p>
         </div>
-        <div class="flex items-center gap-2 w-72 h-9 px-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 <sm:w-full">
+        <div class="flex items-center gap-2 w-72 h-9 px-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 <sm:w-full">
           <svg
             viewBox="0 0 24 24"
             class="w-4 h-4 flex-shrink-0 text-gray-400"
@@ -217,7 +217,7 @@ const filtered = computed(() => {
         <div class="min-w-0">
           <h2
             id="resource-usage-heading"
-            class="text-base font-semibold leading-6 text-gray-800 dark:text-gray-100"
+            class="text-sm font-semibold leading-6 text-gray-800 dark:text-gray-100"
           >
             Resource usage
           </h2>

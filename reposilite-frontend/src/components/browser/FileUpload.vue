@@ -100,10 +100,10 @@ const uploadFiles = () => {
 
 <template>
   <section id="browser-upload" aria-label="File upload">
-    <div 
-      :class="[ isEnabled ? 'rounded-t-3xl rounded-b' : 'rounded-3xl' ]"
+    <div
+      :class="[ isEnabled ? 'rounded-t-lg rounded-b' : 'rounded-lg' ]"
       class="
-        border border-dashed mt-1.5 cursor-pointer
+        min-h-13.5 flex flex-col justify-center border border-dashed mt-1.5 cursor-pointer
         bg-gray-50 border-gray-300 hover:(transition-colors duration-200 bg-white)
         dark:bg-black dark:border-gray-800 dark:hover:(transition-colors duration-400 bg-gray-900)
       "
@@ -122,15 +122,15 @@ const uploadFiles = () => {
         v-model="files"
         ref="upload"
       >
-        <div class="my-3 px-6">
+        <div class="flex items-center px-6 py-3">
           <div v-if="isEnabled" class="py-1">
             <p class="font-bold">
               Deploy selected files to
               <span class="text-gray-500">{{'/' + destination}}</span>
             </p>
           </div>
-          <div v-else class="flex">
-            <span class="text-xm pt-1.6">🟣</span>
+          <div v-else class="flex items-center">
+            <span class="text-sm">🟣</span>
             <span class="font-bold px-5">Select files</span>
           </div>
         </div>
@@ -145,7 +145,7 @@ const uploadFiles = () => {
               :title="`Remove ${file.name}`"
               @click="removeFile(file)"
             >
-              <CloseIcon class="w-5 h-5 pb-1 text-purple-400" aria-hidden="true" />
+              <CloseIcon class="w-5 h-5 pb-1 text-accent-500 dark:text-accent-400" aria-hidden="true" />
             </button>
             <span class="px-2">{{file.name}}</span>
           </li>
@@ -191,12 +191,12 @@ const uploadFiles = () => {
           @click.prevent="uploadFiles"
           class="
             border text-sm py-1.5 h-9 px-4 mt-2 border-dashed rounded
-            bg-gray-50  border-gray-400 hover:(transition-colors duration-200 bg-purple-500 text-white)
-            dark:bg-black dark:border-gray-700 dark:text-white dark:hover:(transition-colors duration-200 bg-purple-700)
+            bg-gray-50  border-gray-400 hover:(transition-colors duration-200 bg-accent-600 text-white)
+            dark:bg-black dark:border-gray-700 dark:text-white dark:hover:(transition-colors duration-200 bg-accent-700)
           "
         >
           <span>Upload files </span>
-          <span class="font-bold text-purple-400">↝</span>
+          <span class="font-bold text-accent-500 dark:text-accent-400">↝</span>
         </button>
       </div>
       <span v-if="!pathMatchesPom" class="px-6 text-yellow-500" role="alert">⚠ Warning: Path does not match artifact coordinates</span>

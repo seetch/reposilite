@@ -15,11 +15,5 @@
   -->
 
 <template>
-  <span>&quot;<slot/>&quot;</span>
+  <span class="text-accent-600 dark:text-accent-400">&quot;<slot/>&quot;</span>
 </template>
-
-<style scoped>
-span {
-  color: mediumpurple;
-}
-</style>

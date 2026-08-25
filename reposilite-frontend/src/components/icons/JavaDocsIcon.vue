@@ -17,7 +17,7 @@
 <template>
   <!-- Source: https://heroicons.dev/ -->
   <svg
-    class="w-6 h-6"
+    class="w-5 h-5"
     fill="none"
     stroke="currentColor"
     stroke-width="1.5"

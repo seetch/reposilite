@@ -26,17 +26,17 @@ const { description, organizationWebsite, organizationLogo } = usePlaceholders()
     <div class="container mx-auto flex flex-row <sm:(flex-col items-center)">
       <div class="w-35 <sm:mb-2">
         <img
-          class="border-2 rounded-full dark:border-gray-700"
+          class="border-2 rounded-full border-gray-150 dark:border-gray-800"
           :src="organizationLogo"
           alt="Organization logo"
         >
       </div>
       <div class="flex flex-col justify-center px-10 <sm:px-0">
         <div class="<sm:text-center" v-html="description"></div>
-        <div class="flex flex-row py-2 <sm:justify-center">
-          <GlobeIcon aria-hidden="true" />
+        <div class="flex flex-row items-center py-2 <sm:justify-center">
+          <GlobeIcon class="text-gray-400" aria-hidden="true" />
           <a
-            class="px-3 text-gray-500"
+            class="px-3 text-gray-500 dark:text-gray-400 hover:text-accent-600 dark:hover:text-accent-400 transition-colors"
             :href="organizationWebsite"
             target="_blank"
             rel="noopener noreferrer"

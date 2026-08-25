@@ -23,14 +23,12 @@ import EyeIcon from '../icons/EyeIcon.vue'
 import JavaDocsIcon from "../icons/JavaDocsIcon.vue"
 import TrashIcon from '../icons/TrashIcon.vue'
 import {property} from '../../helpers/vue-extensions'
-import { computed } from 'vue'
 
 const props = defineProps({
   file: property(Object, true),
   qualifier: property(Object, true),
   url: property(String, false),
-  openDeleteEntryModal: property(Function, true),
-  compactMode: property(Boolean, true)
+  openDeleteEntryModal: property(Function, true)
 })
 
 const { hasPermissionTo } = useSession()
@@ -53,56 +51,54 @@ const getJavaDocsUrl = () => {
 
   return createURL(`/javadoc/${qualifier}`)
 }
-
-const defaultMode = computed(() => !props.compactMode)
 </script>
 
 <template>
-  <div class="browser-entry pointer-events-none" :class="{ 'default-entry': defaultMode, 'compact-entry': compactMode }">
-    <div class="flex flex-row max-w-full">
-      <div v-if="file.type == 'DIRECTORY'" :class="{ 'default-icon': defaultMode, 'compact-icon': compactMode }">⚫</div>
-      <div v-else :class="{ 'default-icon': defaultMode, 'compact-icon': compactMode }">⚪</div>
-      <div :class="{ 'default-filename': defaultMode, 'compact-filename': compactMode }">{{file.name}}</div>
+  <div class="browser-entry default-entry pointer-events-none">
+    <div class="flex flex-row items-center max-w-full">
+      <div v-if="file.type == 'DIRECTORY'" class="default-icon">⚫</div>
+      <div v-else class="default-icon">⚪</div>
+      <div class="default-filename">{{file.name}}</div>
     </div>
-    <div class="entry-details flex flex-1 justify-end">
-      <div class="entry-menu relative z-10 hidden flex flex-row justify-end pointer-events-auto">
+    <div class="entry-details flex flex-1 items-center justify-end gap-3">
+      <div class="entry-menu relative z-10 flex flex-row items-center justify-end gap-1 min-h-9 opacity-0 pointer-events-none">
         <button
-          v-if="file.hasOwnProperty('contentLength') && isHumanReadable" 
+          v-if="file.hasOwnProperty('contentLength') && isHumanReadable"
           type="button"
           :title="`Click to view ${file.name} file content in a new tab`"
           :aria-label="`View ${file.name} file content in a new tab`"
-          class="w-6 h-6 p-0 mr-6 rounded-full text-purple-300 hover:(transition-colors duration-200 bg-gray-100 dark:bg-gray-900)"
+          class="icon-btn text-accent-500 dark:text-accent-400 hover:(bg-gray-100 dark:bg-gray-900)"
           @click.left.prevent="openUrl(url)"
           v-on:click.stop
         >
-          <EyeIcon class="px-1 pt-0.4" aria-hidden="true" />
+          <EyeIcon aria-hidden="true" />
         </button>
         <button
           v-if="isJavaDocsAvailable()"
           type="button"
           :title="`Click to view ${file.name} javadocs in a new tab`"
           :aria-label="`View ${file.name} Javadocs in a new tab`"
-          class="w-6 h-6 p-0 mr-6 rounded-full text-purple-300 hover:(transition-colors duration-200 bg-gray-100 dark:bg-gray-900)"
+          class="icon-btn text-accent-500 dark:text-accent-400 hover:(bg-gray-100 dark:bg-gray-900)"
           @click.left.prevent="openUrl(getJavaDocsUrl())"
           v-on:click.stop
         >
-          <JavaDocsIcon class="px-1 pt-0.4" aria-hidden="true" />
+          <JavaDocsIcon aria-hidden="true" />
         </button>
         <button
           v-if="qualifier.path.length > 1 && hasPermissionTo(`/${qualifier.path}`, 'route:write')"
           type="button"
-          class="w-6 h-6 p-0 mr-6 rounded-full text-purple-300 hover:(transition-colors duration-200 bg-gray-100 dark:bg-gray-900)"
+          class="icon-btn text-accent-500 dark:text-accent-400 hover:(bg-gray-100 dark:bg-gray-900)"
           :aria-label="`Delete ${file.name}`"
           :title="`Delete ${file.name}`"
           @click.left.prevent="openDeleteEntryModal(file.name)"
           v-on:click.stop
         >
-          <TrashIcon class="px-1 pt-0.4" aria-hidden="true" />
+          <TrashIcon aria-hidden="true" />
         </button>
       </div>
       <div v-if="file.hasOwnProperty('contentLength')" class="pr-6">
         {{ prettyBytes(file.contentLength) }}
-      </div>  
+      </div>
     </div>
   </div>
 </template>
@@ -110,7 +106,8 @@ const defaultMode = computed(() => !props.compactMode)
 <style>
 #browser-list li:hover .entry-menu,
 #browser-list li:focus-within .entry-menu {
-  display: flex;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 #browser-list li:hover .default-entry {
@@ -120,36 +117,16 @@ const defaultMode = computed(() => !props.compactMode)
   @apply bg-gray-800;
 }
 
-#browser-list li:hover .compact-entry {
-  @apply transition-colors duration-200 bg-purple-400 text-white;
-}
-.dark #browser-list li:hover .compact-entry {
-  @apply bg-purple-600;
-}
-
 .default-entry {
-  @apply flex flex-row justify-between mb-1.5 py-3 rounded-3xl default-button <sm:rounded-xl;
-}
-.compact-entry {
-  @apply rounded-lg inline-block w-full flex;
-  @apply hover:(transition-colors duration-200 bg-purple-400 text-white);
-  @apply dark:text-white dark:hover:(transition-colors duration-200 bg-purple-600);
+  @apply flex flex-row items-center justify-between mb-2.5 py-2 rounded-lg default-button;
 }
 
 .default-icon {
-  @apply text-xm px-6 pt-1.75 <sm:px-3;
-}
-.compact-icon {
-  @apply text-xxs pl-4 pt-2 <sm:px-3;
+  @apply text-sm px-6 <sm:px-3;
 }
 
 .default-filename {
   @apply font-semibold;
   overflow-wrap: anywhere;
-}
-.compact-filename {
-  @apply pl-3 pr-2 w-full whitespace-nowrap;
-  overflow-wrap: anywhere;
-  text-wrap: auto;
 }
 </style>

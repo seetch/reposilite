@@ -215,7 +215,7 @@ loadStatistics(true)
       <template #note>
         <button
           type="button"
-          class="relative -top-0.5 -my-1 ml-0.5 inline-flex h-7 w-7 items-center justify-center rounded-md align-middle leading-none text-gray-400 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-500 dark:hover:text-gray-200"
+          class="relative -top-0.5 -my-1 ml-0.5 inline-flex h-7 w-7 items-center justify-center rounded-lg align-middle leading-none text-gray-400 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:text-gray-500 dark:hover:text-gray-200"
           aria-label="Open settings"
           title="Open settings"
           @click="$emit('goto', 'Settings')"
@@ -253,9 +253,9 @@ loadStatistics(true)
             v-for="option in rangeOptions"
             :key="option.id"
             type="button"
-            class="h-8 whitespace-nowrap rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-black"
+            class="h-8 whitespace-nowrap rounded-lg px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-black"
             :class="selectedRange === option.id
-              ? 'bg-blue-600 text-white shadow-sm dark:bg-blue-500'
+              ? 'bg-accent-600 text-white shadow-sm dark:bg-accent-500'
               : 'text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-800'"
             :aria-label="option.label"
             :aria-pressed="selectedRange === option.id"
@@ -276,7 +276,7 @@ loadStatistics(true)
           <div class="min-w-0">
             <h2
               id="resolved-paths-heading"
-              class="text-base font-semibold leading-6 text-gray-800 dark:text-gray-100"
+              class="text-sm font-semibold leading-6 text-gray-800 dark:text-gray-100"
             >
               Most resolved paths
             </h2>
@@ -304,7 +304,7 @@ loadStatistics(true)
           </p>
         </div>
         <div class="flex items-center gap-3 px-3.5 py-3.5 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex-wrap">
-          <div class="flex items-center gap-2 flex-1 min-w-48 px-3 h-9 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 <sm:w-full <sm:min-w-0">
+          <div class="flex items-center gap-2 flex-1 min-w-48 px-3 h-9 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 <sm:w-full <sm:min-w-0">
             <svg
               viewBox="0 0 24 24"
               class="w-4 h-4 flex-shrink-0 text-gray-400"
@@ -324,14 +324,14 @@ loadStatistics(true)
             >
             <span
               v-if="isLoading"
-              class="h-4 w-4 flex-none animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 dark:border-gray-600 dark:border-t-blue-400"
+              class="h-4 w-4 flex-none animate-spin rounded-full border-2 border-gray-300 border-t-accent-600 dark:border-gray-600 dark:border-t-accent-400"
               role="status"
               aria-label="Loading resolved paths"
             />
           </div>
           <select
             v-model="repository"
-            class="h-9 min-w-36 pl-3 pr-9 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm outline-none <sm:flex-1"
+            class="h-9 min-w-36 pl-3 pr-9 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm outline-none <sm:flex-1"
             aria-label="Repository"
           >
             <option value="">
@@ -347,7 +347,7 @@ loadStatistics(true)
           </select>
           <select
             v-model.number="limit"
-            class="h-9 min-w-36 pl-3 pr-9 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm outline-none <sm:flex-1"
+            class="h-9 min-w-36 pl-3 pr-9 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm outline-none <sm:flex-1"
             aria-label="Number of paths"
           >
             <option :value="10">
@@ -375,17 +375,17 @@ loadStatistics(true)
               <span class="w-5 text-right text-gray-400 dark:text-gray-600 text-sm flex-none tabular-nums">{{ firstEntry + index }}</span>
               <span class="flex-1 min-w-0 truncate text-sm text-gray-800 dark:text-gray-100 font-mono">/{{ repository ? entry.path : `${entry.repository}/${entry.path}` }}</span>
               <span
-                class="w-32 h-2 rounded-full bg-gray-150 dark:bg-gray-800 overflow-hidden flex-none <sm:hidden"
+                class="w-32 h-2 rounded-lg bg-gray-150 dark:bg-gray-800 overflow-hidden flex-none <sm:hidden"
                 role="progressbar"
                 aria-valuemin="0"
                 :aria-valuemax="maxCount"
                 :aria-valuenow="entry.count"
                 :aria-label="`${entry.count.toLocaleString()} requests`"
               ><i
-                class="block h-full rounded-full bg-blue-600 dark:bg-blue-500 opacity-85"
+                class="block h-full rounded-lg bg-accent-600 dark:bg-accent-500 opacity-85"
                 :style="{ width: barWidth(entry.count) }"
               /></span>
-              <span class="w-16 text-right text-base font-semibold flex-none tabular-nums">{{ entry.count.toLocaleString() }}</span>
+              <span class="w-16 text-right text-sm font-semibold flex-none tabular-nums">{{ entry.count.toLocaleString() }}</span>
             </li>
           </ol>
           <div
@@ -406,7 +406,7 @@ loadStatistics(true)
               <button
                 v-if="page?.offset"
                 type="button"
-                class="h-8 rounded-md border border-gray-300 px-3 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                class="h-8 rounded-lg border border-gray-300 px-3 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
                 @click="previousPage"
               >
                 Previous
@@ -414,7 +414,7 @@ loadStatistics(true)
               <button
                 v-if="page?.hasMore"
                 type="button"
-                class="h-8 rounded-md border border-gray-300 px-3 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                class="h-8 rounded-lg border border-gray-300 px-3 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
                 @click="nextPage"
               >
                 Next
@@ -428,7 +428,7 @@ loadStatistics(true)
           role="status"
         >
           <span
-            class="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 dark:border-gray-600 dark:border-t-blue-400"
+            class="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-accent-600 dark:border-gray-600 dark:border-t-accent-400"
             aria-hidden="true"
           />
           Loading resolved paths…
@@ -443,7 +443,7 @@ loadStatistics(true)
         <div class="mb-4 flex items-start justify-between gap-4 <sm:flex-col <sm:gap-1.5">
           <h2
             id="resolved-requests-heading"
-            class="text-base font-semibold leading-6 text-gray-800 dark:text-gray-100"
+            class="text-sm font-semibold leading-6 text-gray-800 dark:text-gray-100"
           >
             Resolved requests
           </h2>
@@ -470,21 +470,21 @@ loadStatistics(true)
           <div>
             <dt class="text-sm text-gray-500 dark:text-gray-400">
               Total
-            </dt><dd class="text-xl font-semibold mt-0.5 tabular-nums">
+            </dt><dd class="text-sm font-semibold mt-0.5 tabular-nums">
               {{ kpis.total.toLocaleString() }}
             </dd>
           </div>
           <div>
             <dt class="text-sm text-gray-500 dark:text-gray-400">
               {{ kpis.labels.average }}
-            </dt><dd class="text-xl font-semibold mt-0.5 tabular-nums">
+            </dt><dd class="text-sm font-semibold mt-0.5 tabular-nums">
               {{ kpis.average.toLocaleString() }}
             </dd>
           </div>
           <div>
             <dt class="text-sm text-gray-500 dark:text-gray-400">
               {{ kpis.labels.current }}
-            </dt><dd class="text-xl font-semibold mt-0.5 tabular-nums">
+            </dt><dd class="text-sm font-semibold mt-0.5 tabular-nums">
               {{ kpis.current.toLocaleString() }}
             </dd>
           </div>

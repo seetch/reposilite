@@ -92,11 +92,11 @@ const copyTrace = (failure) => {
           <span class="font-mono text-sm font-semibold text-red-600 dark:text-red-400 <sm:text-xs">{{ entry.type }}</span>
           <span
             v-if="entry.occurrences > 1"
-            class="inline-flex items-center gap-1 rounded-full bg-gray-100 dark:bg-gray-700 px-2 py-0.5 text-xs text-gray-600 dark:text-gray-300 whitespace-nowrap"
+            class="inline-flex items-center gap-1 rounded-lg bg-gray-100 dark:bg-gray-700 px-2 py-0.5 text-xs text-gray-600 dark:text-gray-300 whitespace-nowrap"
           ><b class="font-semibold text-gray-800 dark:text-gray-100 tabular-nums">{{ entry.occurrences }}</b> occurrences</span>
           <span
             v-if="entry.messages.length > 1"
-            class="inline-flex items-center gap-1 rounded-full bg-gray-100 dark:bg-gray-700 px-2 py-0.5 text-xs text-gray-600 dark:text-gray-300 whitespace-nowrap"
+            class="inline-flex items-center gap-1 rounded-lg bg-gray-100 dark:bg-gray-700 px-2 py-0.5 text-xs text-gray-600 dark:text-gray-300 whitespace-nowrap"
           ><b class="font-semibold text-gray-800 dark:text-gray-100 tabular-nums">{{ entry.messages.length }}</b> messages</span>
         </div>
         <div class="min-w-0 flex-1 <sm:col-start-3 <sm:row-start-2">
@@ -115,7 +115,7 @@ const copyTrace = (failure) => {
             :href="reportUrl(entry)"
             target="_blank"
             rel="noopener noreferrer"
-            class="relative z-10 inline-flex items-center gap-1.5 text-sm text-blue-600 dark:text-blue-300 whitespace-nowrap hover:text-blue-700 dark:hover:text-blue-200 <sm:text-xs"
+            class="relative z-10 inline-flex items-center gap-1.5 text-sm text-accent-600 dark:text-accent-300 whitespace-nowrap hover:text-accent-700 dark:hover:text-accent-200 <sm:text-xs"
             title="Report on GitHub"
           >
             Report on GitHub
@@ -147,14 +147,14 @@ const copyTrace = (failure) => {
         <div class="relative">
           <button
             type="button"
-            class="absolute top-2 right-2 z-10 flex items-center cursor-pointer select-none rounded-md p-1 bg-gray-100 dark:bg-gray-800 text-gray-400 hover:(text-gray-600 bg-gray-200) dark:hover:(text-gray-200 bg-gray-700) transition-colors duration-200"
+            class="absolute top-2 right-2 z-10 flex items-center cursor-pointer select-none rounded-lg p-1 bg-gray-100 dark:bg-gray-800 text-gray-400 hover:(text-gray-600 bg-gray-200) dark:hover:(text-gray-200 bg-gray-700) transition-colors duration-200"
             title="Copy trace"
             aria-label="Copy failure trace"
             @click="copyTrace(entry)"
           >
             <span
               v-if="copiedFailureKey === failureKey(entry)"
-              class="text-ssm font-normal text-green-500 mr-1.5"
+              class="text-xs font-normal text-green-500 mr-1.5"
               role="status"
             >Copied</span>
             <CopiedIcon
