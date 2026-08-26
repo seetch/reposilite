@@ -125,7 +125,7 @@ watch(
   <div class="bg-gray-100">
     <div class="dark:bg-black">
       <div class="container mx-auto min-h-320px mb-12 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-8 lg:items-start">
-        <aside class="lg:order-2 lg:pt-2" aria-label="Repository snippets">
+        <aside class="pt-4 lg:order-2 lg:pt-2" aria-label="Repository snippets">
           <Card :qualifier="qualifier" />
         </aside>
         <div class="min-w-0 lg:order-1">

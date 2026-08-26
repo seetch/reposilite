@@ -52,10 +52,13 @@ This is a simple, extensible and scalable self-hosted solution that replaces man
 </div>
 
 > This is a fork of [dzikoysk/reposilite](https://github.com/dzikoysk/reposilite) maintained at [seetch/reposilite](https://github.com/seetch/reposilite). Changes on top of upstream:
-> - Redesigned, responsive frontend UI (minimalist layout, light/dark theme, unified sizing/spacing across components)
+> - Redesigned, responsive frontend UI (minimalist layout, graphite dark theme, unified sizing/spacing across components)
 > - Artifact search with a command palette (⌘K/Ctrl+K); public repositories are searchable without authentication, hidden/private ones still require a token
 > - Artifact details snippet now includes a `scope` selector, defaulting to `provided`
 > - Token management now has role presets (Administrator/Publisher/Viewer/Custom) with per-repository access pickers, instead of manually toggling raw permissions and routes
+> - Extended Dashboard, Statistics, and Diagnostics views for monitoring instance health and repository activity
+> - Direct Javadoc access from artifact details for the latest or selected version
+> - Improved mobile navigation, file actions, and upload controls
 
 ### Installation
 

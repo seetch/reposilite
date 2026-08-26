@@ -15,14 +15,17 @@
   -->
 
 <script setup>
-import { nextTick, ref, watch, watchEffect } from 'vue'
+import { computed, nextTick, ref, watch, watchEffect } from 'vue'
 import { onClickOutside, useClipboard } from '@vueuse/core'
+import { createURL } from '../../store/client'
 import { useSession } from '../../store/session'
 import useRepository from '../../store/maven/repository'
 import useMetadata from '../../store/maven/metadata'
+import usePlaceholders from '../../store/placeholders'
 import CopyIcon from '../icons/CopyIcon.vue'
 import CopiedIcon from '../icons/CopiedIcon.vue'
 import AdjustmentsIcon from '../icons/AdjustmentsIcon.vue'
+import JavaDocsIcon from '../icons/JavaDocsIcon.vue'
 import CardMenu from './CardMenu.vue'
 import RepositorySnippet from "./RepositorySnippet.vue"
 import ArtifactSnippet from "./ArtifactSnippet.vue"
@@ -46,6 +49,7 @@ const loading = ref(false)
 const { createRepositories } = useRepository()
 const { parseMetadata } = useMetadata()
 const { client } = useSession()
+const { javadocSuffixes } = usePlaceholders()
 const { copy: copyText, isSupported: isCopySupported } = useClipboard()
 
 const displayRepository = () => {
@@ -57,8 +61,17 @@ const displayArtifact = (metadataSource, version) => {
   title.value = 'Artifact details'
   const { groupId, artifactId, versions } = parseMetadata(metadataSource)
   const latestVersion = versions[version ? versions.indexOf(version) : versions.length - 1]
-  data.value = { type: 'artifact', groupId, artifactId, version: latestVersion }
+  data.value = { type: 'artifact', groupId, artifactId, version: latestVersion, versionSpecific: Boolean(version) }
 }
+
+const javadocUrl = computed(() => {
+  if (loading.value || data.value.type !== 'artifact' || javadocSuffixes.length === 0) {
+    return null
+  }
+
+  const versionPath = data.value.versionSpecific ? '' : '/latest'
+  return createURL(`/javadoc/${props.qualifier.path}${versionPath}`)
+})
 
 watchEffect(() => {
   // 1. Check if gave enough length to be an artifact
@@ -175,11 +188,22 @@ const selectTab = (tab) =>
     :aria-busy="loading"
     aria-labelledby="snippet-card-title"
   >
-    <div class="flex flex-row justify-between">
-      <h2 id="snippet-card-title" class="font-semibold tracking-tight flex items-center w-full">
+    <div class="flex flex-row items-center justify-between gap-3">
+      <h2 id="snippet-card-title" class="min-w-0 flex-1 font-semibold tracking-tight flex items-center">
         <span v-if="loading" class="h-4 w-36 rounded bg-gray-200 dark:bg-gray-700 skeleton-bars" aria-hidden="true" />
         <template v-else>{{title}}</template>
       </h2>
+      <a
+        v-if="javadocUrl"
+        :href="javadocUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex h-9 items-center gap-2 px-3 btn-secondary text-sm font-medium whitespace-nowrap"
+        :title="data.versionSpecific ? `Open Javadoc for ${data.version}` : `Open Javadoc for latest version (${data.version})`"
+      >
+        <JavaDocsIcon class="flex-none" />
+        Javadoc
+      </a>
     </div>
 
     <CardMenu

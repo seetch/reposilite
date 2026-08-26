@@ -101,12 +101,9 @@ const uploadFiles = () => {
 <template>
   <section id="browser-upload" aria-label="File upload">
     <div
-      :class="[ isEnabled ? 'rounded-t-lg rounded-b' : 'rounded-lg' ]"
-      class="
-        min-h-13.5 flex flex-col justify-center border border-dashed mt-1.5 cursor-pointer
-        bg-gray-50 border-gray-300 hover:(transition-colors duration-200 bg-white)
-        dark:bg-black dark:border-gray-800 dark:hover:(transition-colors duration-400 bg-gray-900)
-      "
+      :class="isEnabled
+        ? 'min-h-13.5 flex flex-col justify-center rounded-t-lg rounded-b border border-dashed mt-1.5 bg-gray-50 border-gray-300 dark:bg-black dark:border-gray-800'
+        : 'mt-1.5'"
     >
       <label
         for="file-upload-input"
@@ -114,7 +111,9 @@ const uploadFiles = () => {
       >Select files to upload</label>
       <FileUpload
         input-id="file-upload-input"
-        class="btn btn-primary flex text-left"
+        :class="isEnabled
+          ? 'file-upload-trigger block w-full text-left cursor-pointer'
+          : 'file-upload-trigger block w-full min-h-13.5 px-6 btn-primary text-left'"
         post-action="/upload/post"
         :multiple="true"
         :drop="true"
@@ -122,17 +121,14 @@ const uploadFiles = () => {
         v-model="files"
         ref="upload"
       >
-        <div class="flex items-center px-6 py-3">
+        <div :class="isEnabled ? 'flex items-center px-6 py-3' : 'min-h-13.5 flex items-center'">
           <div v-if="isEnabled" class="py-1">
             <p class="font-bold">
               Deploy selected files to
               <span class="text-gray-500">{{'/' + destination}}</span>
             </p>
           </div>
-          <div v-else class="flex items-center">
-            <span class="text-sm">🟣</span>
-            <span class="font-bold px-5">Select files</span>
-          </div>
+          <span v-else>Select files</span>
         </div>
       </FileUpload>
       <div v-if="isEnabled">

@@ -75,6 +75,9 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+button {
+  flex-shrink: 0;
+}
 .page-footer {
   @apply w-full bg-gray-100 dark:bg-black border-t-1 border-gray-150 dark:border-gray-900 py-4 text-center text-xs text-gray-500 dark:text-gray-400;
 }

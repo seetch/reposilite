@@ -31,14 +31,13 @@ export default defineConfig({
     },
     extend: {
       colors: {
-        // Cool slate-tinted neutrals (not flat gray) so surfaces read as one
-        // deliberate palette instead of default-Tailwind gray.
+        // Neutral graphite surfaces keep the dark theme free of blue tint.
         gray: {
           125: "#f2f4f7",
           150: "#eef1f5",
-          ...colors.slate,
+          ...colors.zinc,
         },
-        accent: colors.blue,
+        accent: colors.violet,
       },
       fontFamily: {
         mono: ["JetBrains Mono", "Consolas", "Monaco", "monospace"],

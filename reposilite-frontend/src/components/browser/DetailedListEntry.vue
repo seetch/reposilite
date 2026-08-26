@@ -60,7 +60,7 @@ const getJavaDocsUrl = () => {
       <div v-else class="default-icon">⚪</div>
       <div class="default-filename">{{file.name}}</div>
     </div>
-    <div class="entry-details flex flex-1 items-center justify-end gap-3">
+    <div class="entry-details flex flex-1 items-center justify-end gap-3 pr-6">
       <div class="entry-menu relative z-10 flex flex-row items-center justify-end gap-1 min-h-9 opacity-0 pointer-events-none">
         <button
           v-if="file.hasOwnProperty('contentLength') && isHumanReadable"
@@ -96,7 +96,7 @@ const getJavaDocsUrl = () => {
           <TrashIcon aria-hidden="true" />
         </button>
       </div>
-      <div v-if="file.hasOwnProperty('contentLength')" class="pr-6">
+      <div v-if="file.hasOwnProperty('contentLength')">
         {{ prettyBytes(file.contentLength) }}
       </div>
     </div>

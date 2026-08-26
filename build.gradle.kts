@@ -74,7 +74,7 @@ allprojects {
     apply(plugin = "application")
 
     group = "com.reposilite"
-    version = rootProject.scmVersion.version
+    version = "3.6.3"
 
     // Give a friendly error when building project and git tags aren't available
     // ~ https://github.com/dzikoysk/reposilite/issues/1725

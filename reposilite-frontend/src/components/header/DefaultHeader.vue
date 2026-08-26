@@ -42,7 +42,7 @@ const { title } = usePlaceholders()
         <div class="flex justify-center <sm:hidden">
           <SearchBox class="w-64 lg:w-96" />
         </div>
-        <MenuPanel class="justify-self-end" />
+        <MenuPanel class="col-start-3 justify-self-end" />
       </div>
     </header>
     <div class="hidden <sm:block border-b-1 border-gray-150 dark:border-gray-900 px-3 py-2">
